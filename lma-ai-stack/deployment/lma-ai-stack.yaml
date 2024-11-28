@@ -715,7 +715,7 @@ Resources:
             Value: !Ref IsLexAgentAssistEnabled
           - Name: REACT_APP_CLOUDFRONT_DOMAIN
             Value: !Sub "https://${WebAppCloudFrontDistribution.DomainName}/"
-      TimeoutInMinutes: 10
+      TimeoutInMinutes: 100
 
   LambdaCodeBuildStartBuildExecutionRole:
     Type: AWS::IAM::Role
