@@ -648,7 +648,7 @@ Resources:
                 - npm install -g npm@10.2.4
                 - echo Installing Web UI dependencies
                 - cd source/ui
-                - npm install
+                - npm install --legacy-peer-deps
             build:
               commands:
                 - echo Build started on `date`
