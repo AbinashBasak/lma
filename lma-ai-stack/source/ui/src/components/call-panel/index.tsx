@@ -15,6 +15,7 @@ import MeetingRecording from './MeetingRecording';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
 import CallTranscriptContainer from './CallTranscript/CallTranscriptContainer';
 import { GetAgentAssistPanel } from './CallTranscript/getAgentAssistPanel';
+import MeetingNote from './MeetingNote';
 
 interface ICallPanel {
   item: ICallDetails;
@@ -69,6 +70,7 @@ const CallPanel = ({ item, callTranscriptPerCallId }: ICallPanel) => {
       <div className="grid grid-cols-12 gap-4">
         <div className="flex flex-col gap-2 col-span-12 lg:col-span-2 lg:sticky lg:top-[122px] lg:h-screen lg:max-h-[calc(100vh_-_130px)] lg:overflow-x-clip">
           <MeetingRecording item={item} />
+          <MeetingNote callId={item.callId} />
         </div>
         <div className="col-span-12 lg:col-span-6">
           <NewCallSummary data={item} />

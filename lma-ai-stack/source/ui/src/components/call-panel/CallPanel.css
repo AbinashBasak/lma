@@ -1,5 +1,3 @@
-/* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-   SPDX-License-Identifier: Apache-2.0 */
 .transcript-box {
     overflow-y: auto;
 }
@@ -42,7 +40,7 @@ span.issue-pill {
     padding-bottom: 0.1em;
 }
 
-.transcript-segment-category-match  {
+.transcript-segment-category-match {
     background-color: lavender;
     border-radius: 2em;
     padding-left: 1em;
@@ -52,11 +50,11 @@ span.issue-pill {
 }
 
 .transcript-segment-category-match p {
-    height:1.5em;
+    height: 1.5em;
     padding: 0px !important;
 }
 
-.transcript-segment-category-match-alert  {
+.transcript-segment-category-match-alert {
     background-color: rgb(255, 147, 147);
     border-radius: 2em;
     padding-left: 1em;
@@ -65,11 +63,11 @@ span.issue-pill {
     line-height: 2.5em !important;
 }
 .transcript-segment-category-match-alert p {
-    height:1.5em;
+    height: 1.5em;
     padding: 0px !important;
-    color:white;
+    color: white;
 }
 
 .hide-transcript {
-    display:none;
+    display: none;
 }

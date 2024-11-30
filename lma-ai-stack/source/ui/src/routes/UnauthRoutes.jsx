@@ -16,7 +16,7 @@ const UnauthRoutes = ({ location }) => (
     <Route path={LOGIN_PATH}>
       <AmplifyAuthContainer>
         <AmplifyAuthenticator>
-          <AmplifySignIn headerText="Welcome to Live Meeting Assistant!" hideSignUp={REACT_APP_SHOULD_HIDE_SIGN_UP} slot="sign-in" className="test" />
+          <AmplifySignIn headerText="Welcome to Live Meeting Assistant!" hideSignUp={false} slot="sign-in" className="test" />
           <AmplifySignUp
             headerText="Welcome to Live Meeting Assistant!"
             slot="sign-up"

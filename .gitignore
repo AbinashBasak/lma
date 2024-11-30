@@ -10,3 +10,4 @@
 samconfig.toml
 .checksum
 .commit-hash
+node_modules

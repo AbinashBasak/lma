@@ -1,8 +1,5 @@
-// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Logger } from 'aws-amplify';
 
 import useCallsContext from '../../contexts/calls';
 import useSettingsContext from '../../contexts/settings';
@@ -15,8 +12,6 @@ import '@awsui/global-styles/index.css';
 import CallPanel from '../call-panel';
 import { Skeleton } from 'components/ui/skeleton';
 
-const logger = new Logger('CallDetails');
-
 const CallDetails = () => {
   const { callId } = useParams();
   const { calls, callTranscriptPerCallId, getCallDetailsFromCallIds, sendGetTranscriptSegmentsRequest, setToolsOpen, setLiveTranscriptCallId } =
@@ -27,7 +22,7 @@ const CallDetails = () => {
 
   const sendInitCallRequests = async () => {
     const response = await getCallDetailsFromCallIds([callId]);
-    logger.debug('call detail response', response);
+
     const callsMap = mapCallsAttributes(response, settings);
     const callDetails = callsMap[0];
     if (callDetails) {
@@ -47,7 +42,6 @@ const CallDetails = () => {
     }
     sendInitCallRequests();
     return () => {
-      logger.debug('set live transcript contact to null');
       setLiveTranscriptCallId(null);
     };
   }, [callId]);
@@ -61,7 +55,6 @@ const CallDetails = () => {
       const callsMap = mapCallsAttributes([callsFiltered[0]], settings);
       const callDetails = callsMap[0];
       if (callDetails?.updatedAt && call.updatedAt < callDetails.updatedAt) {
-        logger.debug('Updating call', callDetails);
         setCall(callDetails);
       }
     }

@@ -65,12 +65,12 @@ server.register(websocket);
 // Setup preHandler hook to authenticate
 server.addHook('preHandler', async (request, reply) => {
 	if (!request.url.includes('health')) {
-		const clientIP = getClientIP(request.headers);
-		server.log.debug(
-			`[AUTH]: [${clientIP}] - Received preHandler hook for authentication. URI: <${
-				request.url
-			}>, Headers: ${JSON.stringify(request.headers)}`
-		);
+		// const clientIP = getClientIP(request.headers);
+		// server.log.debug(
+		// 	`[AUTH]: [${clientIP}] - Received preHandler hook for authentication. URI: <${
+		// 		request.url
+		// 	}>, Headers: ${JSON.stringify(request.headers)}`
+		// );
 
 		await jwtVerifier(request, reply);
 	}
@@ -79,11 +79,11 @@ server.addHook('preHandler', async (request, reply) => {
 // Setup Route for websocket connection
 server.get('/api/v1/ws', { websocket: true, logLevel: 'debug' }, (connection, request) => {
 	const clientIP = getClientIP(request.headers);
-	server.log.debug(
-		`[NEW CONNECTION]: [${clientIP}] - Received new connection request @ /api/v1/ws. URI: <${
-			request.url
-		}>, Headers: ${JSON.stringify(request.headers)}`
-	);
+	// server.log.debug(
+	// 	`[NEW CONNECTION]: [${clientIP}] - Received new connection request @ /api/v1/ws. URI: <${
+	// 		request.url
+	// 	}>, Headers: ${JSON.stringify(request.headers)}`
+	// );
 
 	registerHandlers(clientIP, connection.socket, request); // setup the handler functions for websocket events
 });
@@ -213,11 +213,11 @@ const onTextMessage = async (clientIP: string, ws: WebSocket, data: string, requ
 	const match = auth?.match(/^Bearer (.+)$/);
 	const callMetaData: CallMetaData = JSON.parse(data);
 	if (!match) {
-		server.log.error(
-			`[AUTH]: [${clientIP}] - No Bearer token found in header or query string. URI: <${
-				request.url
-			}>, Headers: ${JSON.stringify(request.headers)}`
-		);
+		// server.log.error(
+		// 	`[AUTH]: [${clientIP}] - No Bearer token found in header or query string. URI: <${
+		// 		request.url
+		// 	}>, Headers: ${JSON.stringify(request.headers)}`
+		// );
 
 		return;
 	}
@@ -225,15 +225,13 @@ const onTextMessage = async (clientIP: string, ws: WebSocket, data: string, requ
 	const accessToken = match[1];
 
 	try {
-		server.log.debug(
-			`[ON TEXT MESSAGE]: [${clientIP}][${callMetaData.callId}] - Call Metadata received from client: ${data}`
-		);
+		server.log.debug(`[ON TEXT MESSAGE]: [${clientIP}][${callMetaData.callId}] - Call Metadata received from client`);
 	} catch (error) {
-		server.log.error(
-			`[ON TEXT MESSAGE]: [${clientIP}][${
-				callMetaData.callId
-			}] - Error parsing call metadata: ${data} ${normalizeErrorForLogging(error)}`
-		);
+		// server.log.error(
+		// 	`[ON TEXT MESSAGE]: [${clientIP}][${
+		// 		callMetaData.callId
+		// 	}] - Error parsing call metadata: ${data} ${normalizeErrorForLogging(error)}`
+		// );
 		callMetaData.callId = randomUUID();
 	}
 
@@ -346,9 +344,9 @@ const onTextMessage = async (clientIP: string, ws: WebSocket, data: string, requ
 			};
 			const command = new GetItemCommand(getPayload);
 			const data = await dynamoClient.send(command);
-			console.log('data', data);
+			console.log('data');
 
-			if (data.Item?.['SessionData'].S) {
+			if (data.Item?.['PK'].S) {
 				const updatePayload = {
 					TableName: CALL_NOTE_TABLE_NAME,
 					Key: {

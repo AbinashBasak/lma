@@ -1565,7 +1565,7 @@ Resources:
     Type: AWS::AppSync::DataSource
     Properties:
       ApiId: !GetAtt AppSyncApiEncrypted.ApiId
-      Name: CallEventNote
+      Name: CallNote
       Description: Call Note DynamoDB Table
       Type: AMAZON_DYNAMODB
       ServiceRoleArn: !GetAtt AppSyncDynamoDbRole.Arn
