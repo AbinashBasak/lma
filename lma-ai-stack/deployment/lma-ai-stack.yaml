@@ -13,7 +13,7 @@
 # limitations under the License.
 
 ---
-AWSTemplateFormatVersion: "2010-09-09"
+AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 
 Description: Amazon Transcribe Live Meeting Assist - AI Stack
@@ -39,9 +39,8 @@ Parameters:
 
   AudioRecordingExpirationInDays:
     Type: Number
-    Description:
-      "Number of days after which audio recordings will be deleted from
-      the Recordings bucket."
+    Description: 'Number of days after which audio recordings will be deleted from
+      the Recordings bucket.'
     Default: 90
 
   CallAudioSource:
@@ -62,7 +61,7 @@ Parameters:
 
   S3BucketName:
     Type: String
-    Default: ""
+    Default: ''
     Description: >
       Existing bucket where call recording files will be stored.
     # yamllint disable rule:line-length
@@ -77,7 +76,7 @@ Parameters:
 
   TranscriptFileBucketName:
     Type: String
-    Default: ""
+    Default: ''
     Description: >
       Existing bucket where transcript files will be stored.
     # yamllint disable rule:line-length
@@ -86,12 +85,12 @@ Parameters:
 
   IsSentimentAnalysisEnabled:
     Type: String
-    Default: "true"
+    Default: 'true'
     Description: >-
       Enable sentiment analysis
     AllowedValues:
-      - "true"
-      - "false"
+      - 'true'
+      - 'false'
   SentimentNegativeScoreThreshold:
     Type: Number
     Default: 0.9
@@ -133,9 +132,9 @@ Parameters:
         # - zh-TW
 
   TranscriptLambdaHookFunctionArn:
-    Default: ""
+    Default: ''
     Type: String
-    AllowedPattern: "^(|arn:aws:lambda:.*)$"
+    AllowedPattern: '^(|arn:aws:lambda:.*)$'
     Description: >
       (Optional) If present, the specified Lambda function is invoked by the LMA Call
       Event Processor Lambda function for each completed  (non-partial) transcript
@@ -146,21 +145,21 @@ Parameters:
 
   TranscriptLambdaHookFunctionNonPartialOnly:
     Type: String
-    Default: "true"
+    Default: 'true'
     AllowedValues:
-      - "true"
-      - "false"
+      - 'true'
+      - 'false'
     Description: >
       Specifies if Transcript Lambda Hook Function (if specified) is invoked for Non-Partial
       transcript segments only (true), or for
       both Partial and Non-Partial transcript segments (false).
 
   EndOfCallTranscriptSummary:
-    Default: "BEDROCK"
+    Default: 'BEDROCK'
     Type: String
     AllowedValues:
-      - "LAMBDA"
-      - "BEDROCK"
+      - 'LAMBDA'
+      - 'BEDROCK'
 
     Description: >
       Set to enable call summarization by a Large Language Model. Currently only BEDROCK
@@ -170,22 +169,22 @@ Parameters:
       ARN below.
 
   BedrockModelId:
-    Default: "anthropic.claude-3-haiku-20240307-v1:0"
+    Default: 'anthropic.claude-3-haiku-20240307-v1:0'
     Type: String
     AllowedValues:
-      - "anthropic.claude-3-haiku-20240307-v1:0"
-      - "anthropic.claude-3-sonnet-20240229-v1:0"
-      - "anthropic.claude-3-5-sonnet-20240620-v1:0"
-      - "anthropic.claude-3-5-sonnet-20241022-v2:0"
+      - 'anthropic.claude-3-haiku-20240307-v1:0'
+      - 'anthropic.claude-3-sonnet-20240229-v1:0'
+      - 'anthropic.claude-3-5-sonnet-20240620-v1:0'
+      - 'anthropic.claude-3-5-sonnet-20241022-v2:0'
 
     Description: >
       If EndOfCallTranscriptSummary is BEDROCK, then choose a model ID from the list
       of supported models.  Defaults to 'anthropic.claude-3-haiku-20240307-v1:0'
 
   EndOfCallLambdaHookFunctionArn:
-    Default: ""
+    Default: ''
     Type: String
-    AllowedPattern: "^(|arn:aws:lambda:.*)$"
+    AllowedPattern: '^(|arn:aws:lambda:.*)$'
     Description: >
       (Optional) If 'End Of Call Transcript Summary' is LAMBDA, provide ARN for a
       Lambda function. The specified Lambda function is invoked by the LMA Call Event
@@ -195,9 +194,9 @@ Parameters:
       for example, creating a call summary.
 
   StartOfCallLambdaHookFunctionArn:
-    Default: ""
+    Default: ''
     Type: String
-    AllowedPattern: "^(|arn:aws:lambda:.*)$"
+    AllowedPattern: '^(|arn:aws:lambda:.*)$'
     Description: >
       (Optional) The specified Lambda function is invoked by the LMA Call Event Processor
       Lambda function for beginning or start of  call event. This function can implement
@@ -206,9 +205,9 @@ Parameters:
       call summary details logged into a case in a CRM.
 
   PostCallSummaryLambdaHookFunctionArn:
-    Default: ""
+    Default: ''
     Type: String
-    AllowedPattern: "^(|arn:aws:lambda:.*)$"
+    AllowedPattern: '^(|arn:aws:lambda:.*)$'
     Description: >
       (Optional) The specified Lambda function is invoked by the LMA Call Event Processor
       Lambda function after the call summary is processed.
@@ -235,39 +234,39 @@ Parameters:
 
   CloudFrontAllowedGeos:
     Type: String
-    Default: ""
+    Default: ''
     Description: >-
       Specify a comma separated list of two letter country codes (uppercase ISO 3166-1)
       that are
       allowed to access the web user interface via CloudFront. For example: US,CA.
       Leave empty if
       you do not want geo restrictions to be applied.
-    AllowedPattern: "^(|[A-Z]{2}(,[A-Z]{2})*)$"
+    AllowedPattern: '^(|[A-Z]{2}(,[A-Z]{2})*)$'
     ConstraintDescription: >-
       Comma separated list of uppercase two letter country codes or empty
 
   IsLexAgentAssistEnabled:
     Type: String
-    Default: "false"
+    Default: 'false'
     Description: >-
       Enables the Lex Agent Assist feature.
     AllowedValues:
-      - "true"
-      - "false"
+      - 'true'
+      - 'false'
   IsLambdaAgentAssistEnabled:
     Type: String
-    Default: "false"
+    Default: 'false'
     Description: >-
       Enables the Lambda Agent Assist feature. The AgentAssistExistingLambdaFunctionArn
       parameters should have values if this is set to 'true'
     AllowedValues:
-      - "true"
-      - "false"
+      - 'true'
+      - 'false'
 
   AgentAssistExistingLambdaFunctionArn:
-    Default: ""
+    Default: ''
     Type: String
-    AllowedPattern: "^(|arn:aws:lambda:.*)$"
+    AllowedPattern: '^(|arn:aws:lambda:.*)$'
     Description: >
       Used only if IsLambdaAgentAssistEnabled is set to "true".
       Provide the function ARN of an existing Lambda function to be used for Agent
@@ -319,24 +318,23 @@ Parameters:
 
   AssistantWakePhraseRegEx:
     Type: String
-    Default: "(OK|Okay)[.,! ]*[Aa]ssistant"
+    Default: '(OK|Okay)[.,! ]*[Aa]ssistant'
     Description: >
       A regular expression for the wake phrase that invokes the Meeting Assistant.
       Default is 'OK Assistant'.
 
   EnableVoiceToneAnalysis:
     Type: String
-    Default: "false"
+    Default: 'false'
     AllowedValues:
-      - "true"
-      - "false"
+      - 'true'
+      - 'false'
     Description: >
       Whether or not to show the voice tone analysis panel in the UI
 
   LLMPromptTemplateTableName:
     Type: String
-    Description:
-      The DynamoDB table name where the default and custom summary prompt
+    Description: The DynamoDB table name where the default and custom summary prompt
       templates are stored.
 
   CloudWatchLogsExpirationInDays:
@@ -346,10 +344,10 @@ Parameters:
 
   EnableAppSyncApiCache:
     Type: String
-    Default: "false"
+    Default: 'false'
     AllowedValues:
-      - "true"
-      - "false"
+      - 'true'
+      - 'false'
     Description: >-
       Enable or disable the AppSync Api Cache.
 
@@ -380,7 +378,7 @@ Parameters:
 
   AllowedSignUpEmailDomain:
     Type: String
-    Default: ""
+    Default: ''
     Description: >-
       Email address domain (example.com) or comma separated list of email domains  (example1.com,
       example2.com) allowed to signin and signup using the web UI.
@@ -389,9 +387,8 @@ Parameters:
       Cognito.
     AllowedPattern: '^(|([\w-]+\.)+[\w-]{2,6}(, *([\w-]+\.)+[\w-]{2,6})*)$'
 
-
 Metadata:
-  "AWS::CloudFormation::Interface":
+  'AWS::CloudFormation::Interface':
     ParameterGroups:
       - Label:
           default: Amazon S3 Configuration
@@ -414,8 +411,7 @@ Metadata:
       ComprehendLanguageCode:
         default: Comprehend Sentiment Analysis Language Code
       TranscriptLambdaHookFunctionArn:
-        default:
-          Lambda Hook Function ARN for Custom Transcript Segment Processing
+        default: Lambda Hook Function ARN for Custom Transcript Segment Processing
           (existing)
       TranscriptLambdaHookFunctionNonPartialOnly:
         default: Lambda Hook Function Mode Non-Partial only
@@ -428,40 +424,31 @@ Metadata:
       StartOfCallLambdaHookFunctionArn:
         default: Lambda Hook Function ARN for Custom Start of Call Processing (existing)
       PostCallSummaryLambdaHookFunctionArn:
-        default:
-          Lambda Hook Function ARN for Custom Post Processing, after the Call
+        default: Lambda Hook Function ARN for Custom Post Processing, after the Call
           Transcript Summary is processed (existing)
 
 Conditions:
-  ShouldAllowSignUpEmailDomain:
-    !Not [!Equals [!Ref AllowedSignUpEmailDomain, ""]]
-  ShouldEnableGeoRestriction: !Not [!Equals [!Ref CloudFrontAllowedGeos, ""]]
-  ShouldEnableLambdaAgentAssist:
-    !Equals [!Ref IsLambdaAgentAssistEnabled, "true"]
-  ShouldEnableTranscriptLambdaHookFunction:
-    !Not [!Equals [!Ref TranscriptLambdaHookFunctionArn, ""]]
-  ShouldEnableStartOfCallLambdaHookFunction:
-    !Not [!Equals [!Ref StartOfCallLambdaHookFunctionArn, ""]]
-  ShouldEnablePostCallSummaryLambdaHookFunction:
-    !Not [!Equals [!Ref PostCallSummaryLambdaHookFunctionArn, ""]]
-  ShouldEnableEndOfCallLambdaHookFunction:
-    !Equals [!Ref EndOfCallTranscriptSummary, "LAMBDA"]
-  ShouldEnableBedrockSummarizer:
-    !Equals [!Ref EndOfCallTranscriptSummary, "BEDROCK"]
+  ShouldAllowSignUpEmailDomain: !Not [!Equals [!Ref AllowedSignUpEmailDomain, '']]
+  ShouldEnableGeoRestriction: !Not [!Equals [!Ref CloudFrontAllowedGeos, '']]
+  ShouldEnableLambdaAgentAssist: !Equals [!Ref IsLambdaAgentAssistEnabled, 'true']
+  ShouldEnableTranscriptLambdaHookFunction: !Not [!Equals [!Ref TranscriptLambdaHookFunctionArn, '']]
+  ShouldEnableStartOfCallLambdaHookFunction: !Not [!Equals [!Ref StartOfCallLambdaHookFunctionArn, '']]
+  ShouldEnablePostCallSummaryLambdaHookFunction: !Not [!Equals [!Ref PostCallSummaryLambdaHookFunctionArn, '']]
+  ShouldEnableEndOfCallLambdaHookFunction: !Equals [!Ref EndOfCallTranscriptSummary, 'LAMBDA']
+  ShouldEnableBedrockSummarizer: !Equals [!Ref EndOfCallTranscriptSummary, 'BEDROCK']
 
   IsTranscriptSummaryEnabled: !Or
     - !Condition ShouldEnableEndOfCallLambdaHookFunction
     - !Condition ShouldEnableBedrockSummarizer
 
-  ShouldEnableAppSyncApiCache: !Equals [!Ref EnableAppSyncApiCache, "true"]
+  ShouldEnableAppSyncApiCache: !Equals [!Ref EnableAppSyncApiCache, 'true']
 
 Outputs:
   CloudfrontEndpoint:
     Description: Endpoint for Cloudfront distribution
-    Value: !Sub "https://${WebAppCloudFrontDistribution.DomainName}/"
+    Value: !Sub 'https://${WebAppCloudFrontDistribution.DomainName}/'
   EventSourcingTableName:
-    Description:
-      The Name for the DynamoDB that is used to store transcriptions and
+    Description: The Name for the DynamoDB that is used to store transcriptions and
       events
     Value: !Ref EventSourcingTable
   EventSourcingTableArn:
@@ -476,8 +463,7 @@ Outputs:
     Description: The SNS topic name that LMA publishes category events to
     Value: !GetAtt CategorySNSTopic.TopicName
   FetchTranscriptArn:
-    Description:
-      The arn for a Lambda function that fetches a call transcript as a
+    Description: The arn for a Lambda function that fetches a call transcript as a
       string
     Value: !GetAtt FetchTranscript.Arn
   CloudFrontDistributionId:
@@ -491,12 +477,7 @@ Outputs:
     Value: !GetAtt WebAppCloudFrontDistribution.DomainName
   TranscriptSummaryFunctionArn:
     Description: Call Summarizer Lambda function ARN
-    Value:
-      !If [
-        ShouldEnableBedrockSummarizer,
-        !GetAtt BedrockSummaryLambda.Arn,
-        !Ref EndOfCallLambdaHookFunctionArn,
-      ]
+    Value: !If [ShouldEnableBedrockSummarizer, !GetAtt BedrockSummaryLambda.Arn, !Ref EndOfCallLambdaHookFunctionArn]
   LocalUITestingEnv:
     Description: Copy to create .env file for local UI testing
     Value: !Sub >-
@@ -535,7 +516,7 @@ Resources:
         Enabled: true
       StreamSpecification:
         StreamViewType: NEW_IMAGE
-  
+
   CallNoteTable:
     Type: AWS::DynamoDB::Table
     DeletionPolicy: Retain
@@ -580,8 +561,8 @@ Resources:
             Version: 2012-10-17
             Statement:
               - Resource:
-                  - !Sub "arn:aws:s3:::${BootstrapBucketBaseName}-${AWS::Region}"
-                  - !Sub "arn:aws:s3:::${BootstrapBucketBaseName}-${AWS::Region}/${BootstrapS3Prefix}/*"
+                  - !Sub 'arn:aws:s3:::${BootstrapBucketBaseName}-${AWS::Region}'
+                  - !Sub 'arn:aws:s3:::${BootstrapBucketBaseName}-${AWS::Region}/${BootstrapS3Prefix}/*'
                 Effect: Allow
                 Action:
                   - s3:GetObject
@@ -591,14 +572,14 @@ Resources:
                   - s3:PutObject
                   - s3:ListBucket
               - Resource:
-                  - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/*"
-                  - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/*:*"
+                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/*'
+                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/*:*'
                 Effect: Allow
                 Action:
                   - logs:CreateLogGroup
                   - logs:CreateLogStream
                   - logs:PutLogEvents
-              - Resource: "*"
+              - Resource: '*'
                 Effect: Allow
                 Action:
                   - ecr:GetAuthorizationToken
@@ -607,12 +588,12 @@ Resources:
                   - s3:PutObject
                   - s3:DeleteObject
                 Resource:
-                  - !Sub "arn:aws:s3:::${WebAppBucket}/*"
+                  - !Sub 'arn:aws:s3:::${WebAppBucket}/*'
               - Effect: Allow
                 Action:
                   - cloudfront:CreateInvalidation
                 Resource:
-                  - !Sub "arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:distribution/${WebAppCloudFrontDistribution}"
+                  - !Sub 'arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:distribution/${WebAppCloudFrontDistribution}'
     Metadata:
       cfn_nag:
         rules_to_suppress:
@@ -633,7 +614,7 @@ Resources:
         Type: NO_ARTIFACTS
       Source:
         # Makefile calculates and substitute code hash in the filename here during package build
-        Location: !Sub "arn:aws:s3:::${BootstrapBucketBaseName}-${AWS::Region}/${BootstrapS3Prefix}/${BootstrapVersion}/src-hash.zip"
+        Location: !Sub 'arn:aws:s3:::${BootstrapBucketBaseName}-${AWS::Region}/${BootstrapS3Prefix}/${BootstrapVersion}/src-hash.zip'
         Type: S3
         BuildSpec: |
           version: 0.2
@@ -655,7 +636,7 @@ Resources:
                 - cd $CODEBUILD_SRC_DIR
                 - cd source/ui
                 - echo Building Web UI
-                - npm run build
+                - NODE_OPTIONS="--max-old-space-size=4096" npm run build
                 - >
                   printf '{"RepositoryUri":"%s","ProjectName":"%s","ArtifactBucket":"%s"}'
                   $REPOSITORY_URI $PROJECT_NAME $ARTIFACT_BUCKET > build.json
@@ -685,7 +666,7 @@ Resources:
           - Name: IMAGE_TAG
             Value: !Ref BootstrapVersion
           - Name: SOURCE_CODE_LOCATION
-            Value: !Sub "${BootstrapBucketBaseName}-${AWS::Region}/${BootstrapS3Prefix}/${BootstrapVersion}"
+            Value: !Sub '${BootstrapBucketBaseName}-${AWS::Region}/${BootstrapS3Prefix}/${BootstrapVersion}'
           - Name: WEBAPP_BUCKET
             Value: !Ref WebAppBucket
           - Name: CLOUDFRONT_DISTRIBUTION_ID
@@ -709,19 +690,19 @@ Resources:
           - Name: REACT_APP_SHOULD_HIDE_SIGN_UP
             Value: !If
               - ShouldAllowSignUpEmailDomain
-              - "false"
-              - "true"
+              - 'false'
+              - 'true'
           - Name: REACT_APP_ENABLE_LEX_AGENT_ASSIST
             Value: !Ref IsLexAgentAssistEnabled
           - Name: REACT_APP_CLOUDFRONT_DOMAIN
-            Value: !Sub "https://${WebAppCloudFrontDistribution.DomainName}/"
+            Value: !Sub 'https://${WebAppCloudFrontDistribution.DomainName}/'
       TimeoutInMinutes: 100
 
   LambdaCodeBuildStartBuildExecutionRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Principal:
@@ -729,11 +710,11 @@ Resources:
                 - lambda.amazonaws.com
             Action:
               - sts:AssumeRole
-      Path: "/"
+      Path: '/'
       Policies:
         - PolicyName: root
           PolicyDocument:
-            Version: "2012-10-17"
+            Version: '2012-10-17'
             Statement:
               - Effect: Allow
                 Action:
@@ -745,7 +726,7 @@ Resources:
                   - logs:CreateLogGroup
                   - logs:CreateLogStream
                   - logs:PutLogEvents
-                Resource: "*"
+                Resource: '*'
           # Used by custom resource helper poller
           # https://github.com/aws-cloudformation/custom-resource-helper
         - PolicyName: CustomResourcePoller
@@ -759,13 +740,13 @@ Resources:
                   - events:PutTargets
                   - events:RemoveTargets
                 Resource:
-                  - !Sub "arn:${AWS::Partition}:events:${AWS::Region}:${AWS::AccountId}:rule/*"
+                  - !Sub 'arn:${AWS::Partition}:events:${AWS::Region}:${AWS::AccountId}:rule/*'
               - Effect: Allow
                 Action:
                   - lambda:AddPermission
                   - lambda:RemovePermission
                 Resource:
-                  - !Sub "arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:*"
+                  - !Sub 'arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:*'
 
   CodeBuildRun:
     Type: Custom::CodeBuildRun
@@ -779,7 +760,7 @@ Resources:
       # Makefile calculates and substitute code hash in the filename here during package build
       # to force codebuild to rerun when source code changes, and to correctly roll back to
       # previous version if build fails.
-      CodeLocation: !Sub "arn:aws:s3:::${BootstrapBucketBaseName}-${AWS::Region}/${BootstrapS3Prefix}/${BootstrapVersion}/src-hash.zip"
+      CodeLocation: !Sub 'arn:aws:s3:::${BootstrapBucketBaseName}-${AWS::Region}/${BootstrapS3Prefix}/${BootstrapVersion}/src-hash.zip'
 
   LambdaCodeBuildStartBuild:
     Type: AWS::Serverless::Function
@@ -865,22 +846,22 @@ Resources:
     Properties:
       Description: Fetch Transcript Lambda Role
       AssumeRolePolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Principal:
               Service: lambda.amazonaws.com
             Action:
-              - "sts:AssumeRole"
+              - 'sts:AssumeRole'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
       Policies:
         - PolicyName: !Sub ${AWS::StackName}-FetchTranscript
           PolicyDocument:
-            Version: "2012-10-17"
+            Version: '2012-10-17'
             Statement:
-              - Effect: "Allow"
-                Action: 
+              - Effect: 'Allow'
+                Action:
                   - dynamodb:Query
                   - dynamodb:GetItem
                 Resource: !GetAtt EventSourcingTable.Arn
@@ -895,8 +876,8 @@ Resources:
         Variables:
           BEDROCK_MODEL_ID: !Ref BedrockModelId
           FETCH_TRANSCRIPT_LAMBDA_ARN: !GetAtt FetchTranscript.Arn
-          TOKEN_COUNT: "0"
-          PROCESS_TRANSCRIPT: "True"
+          TOKEN_COUNT: '0'
+          PROCESS_TRANSCRIPT: 'True'
           LLM_PROMPT_TEMPLATE_TABLE_NAME: !Ref LLMPromptTemplateTableName
           S3_BUCKET_NAME: !Ref S3BucketName
           S3_PREFIX: !Ref TranscriptFilePrefix
@@ -906,8 +887,7 @@ Resources:
       CodeUri: ../source/lambda_functions/bedrock_summary_lambda
       Layers:
         - !GetAtt BedrockPreviewBoto3Stack.Outputs.BedrockBoto3Layer
-      Description:
-        This AWS Lambda Function runs a transcript summary inference on
+      Description: This AWS Lambda Function runs a transcript summary inference on
         the call transcript using Bedrock API
       LoggingConfig:
         LogGroup:
@@ -936,48 +916,48 @@ Resources:
     Properties:
       Description: Bedrock Summary Lambda Role
       AssumeRolePolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Principal:
               Service: lambda.amazonaws.com
             Action:
-              - "sts:AssumeRole"
+              - 'sts:AssumeRole'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
       Policies:
         - PolicyName: !Sub ${AWS::StackName}-Bedrock-Fetch-Transcript
           PolicyDocument:
-            Version: "2012-10-17"
+            Version: '2012-10-17'
             Statement:
-              - Effect: "Allow"
-                Action: "lambda:InvokeFunction"
+              - Effect: 'Allow'
+                Action: 'lambda:InvokeFunction'
                 Resource: !GetAtt FetchTranscript.Arn
               - Effect: Allow
                 Action:
-                  - "dynamodb:GetItem"
+                  - 'dynamodb:GetItem'
                 Resource:
-                  - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${LLMPromptTemplateTableName}"
+                  - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${LLMPromptTemplateTableName}'
         - PolicyName: !Sub ${AWS::StackName}-BedrockSummary
           PolicyDocument:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
                 Action:
-                  - "bedrock:InvokeModel"
+                  - 'bedrock:InvokeModel'
                 Resource:
-                  - !Sub "arn:${AWS::Partition}:bedrock:*::foundation-model/*"
-                  - !Sub "arn:${AWS::Partition}:bedrock:*:${AWS::AccountId}:custom-model/*"
+                  - !Sub 'arn:${AWS::Partition}:bedrock:*::foundation-model/*'
+                  - !Sub 'arn:${AWS::Partition}:bedrock:*:${AWS::AccountId}:custom-model/*'
         - PolicyName: !Sub ${AWS::StackName}-S3
           PolicyDocument:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
                 Action:
-                  - "s3:PutObject"
+                  - 's3:PutObject'
                 Resource:
-                  - !Sub "arn:aws:s3:::${S3BucketName}"
-                  - !Sub "arn:aws:s3:::${S3BucketName}/*"
+                  - !Sub 'arn:aws:s3:::${S3BucketName}'
+                  - !Sub 'arn:aws:s3:::${S3BucketName}/*'
 
   AsyncAgentAssistOrchestrator:
     Type: AWS::Serverless::Function
@@ -987,9 +967,9 @@ Resources:
       Environment:
         Variables:
           CALL_DATA_STREAM_NAME: !Ref CallDataStream
-          LEX_BOT_ID: "Pending AgentAssistSetup"
-          LEX_BOT_ALIAS_ID: "Pending AgentAssistSetup"
-          LEX_BOT_LOCALE_ID: "Pending AgentAssistSetup"
+          LEX_BOT_ID: 'Pending AgentAssistSetup'
+          LEX_BOT_ALIAS_ID: 'Pending AgentAssistSetup'
+          LEX_BOT_LOCALE_ID: 'Pending AgentAssistSetup'
           # Lex Agent Assist
           IS_LEX_AGENT_ASSIST_ENABLED: !Ref IsLexAgentAssistEnabled
           # Lambda Agent Assist
@@ -1029,19 +1009,19 @@ Resources:
     Properties:
       Description: Async Agent Assist Orchestrator Lambda Role
       AssumeRolePolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Principal:
               Service: lambda.amazonaws.com
             Action:
-              - "sts:AssumeRole"
+              - 'sts:AssumeRole'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
       Policies:
         - PolicyName: !Sub ${AWS::StackName}-AsyncAgentAssist
           PolicyDocument:
-            Version: "2012-10-17"
+            Version: '2012-10-17'
             Statement:
               - Effect: Allow
                 Action: kinesis:PutRecord
@@ -1049,14 +1029,14 @@ Resources:
               - Effect: Allow
                 Action:
                   - lex:RecognizeText
-                Resource: "*"
+                Resource: '*'
               - !If
                 - ShouldEnableLambdaAgentAssist
                 - Effect: Allow
                   Action:
                     - lambda:InvokeFunction
                   Resource:
-                    - !Sub "${AgentAssistExistingLambdaFunctionArn}"
+                    - !Sub '${AgentAssistExistingLambdaFunctionArn}'
                 - Ref: AWS::NoValue
 
   AsyncTranscriptSummaryOrchestrator:
@@ -1067,11 +1047,7 @@ Resources:
       Environment:
         Variables:
           TRANSCRIPT_SUMMARY_FUNCTION_ARN:
-            !If [
-              ShouldEnableBedrockSummarizer,
-              !GetAtt BedrockSummaryLambda.Arn,
-              !Ref EndOfCallLambdaHookFunctionArn,
-            ]
+            !If [ShouldEnableBedrockSummarizer, !GetAtt BedrockSummaryLambda.Arn, !Ref EndOfCallLambdaHookFunctionArn]
           CALL_DATA_STREAM_NAME: !Ref CallDataStream
           BOTO_READ_TIMEOUT: 60
       Timeout: 240
@@ -1107,19 +1083,19 @@ Resources:
     Properties:
       Description: Async Transcript Summary Orchetrator Lambda Role
       AssumeRolePolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Principal:
               Service: lambda.amazonaws.com
             Action:
-              - "sts:AssumeRole"
+              - 'sts:AssumeRole'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
       Policies:
         - PolicyName: !Sub ${AWS::StackName}-AsyncTranscriptSummary
           PolicyDocument:
-            Version: "2012-10-17"
+            Version: '2012-10-17'
             Statement:
               - Effect: Allow
                 Action: kinesis:PutRecord
@@ -1129,7 +1105,7 @@ Resources:
                 - Effect: Allow
                   Action:
                     - lambda:InvokeFunction
-                  Resource: !Sub "${EndOfCallLambdaHookFunctionArn}"
+                  Resource: !Sub '${EndOfCallLambdaHookFunctionArn}'
                 - Ref: AWS::NoValue
               - !If
                 - ShouldEnableBedrockSummarizer
@@ -1139,7 +1115,6 @@ Resources:
                   Resource:
                     - !GetAtt BedrockSummaryLambda.Arn
                 - Ref: AWS::NoValue
-
 
   ##########################################################################
   # SNS Topic for Category Event Notifications
@@ -1201,45 +1176,45 @@ Resources:
             - Effect: Allow
               Action:
                 - ssm:GetParameter
-              Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${LMASettingsParameterName}"
+              Resource: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${LMASettingsParameterName}'
             - Effect: Allow
               Action:
                 - appsync:GraphQL
               Resource:
                 # XXX specific mutation - addEnrichment
-                - !Sub "${AppSyncApiEncrypted.Arn}/types/Mutation/*"
-                - !Sub "${AppSyncApiEncrypted.Arn}/types/Query/fields/__schema"
-                - !Sub "${AppSyncApiEncrypted.Arn}/types/Query/fields/getCall"
-                - !Sub "${AppSyncApiEncrypted.Arn}/types/Query/*"
+                - !Sub '${AppSyncApiEncrypted.Arn}/types/Mutation/*'
+                - !Sub '${AppSyncApiEncrypted.Arn}/types/Query/fields/__schema'
+                - !Sub '${AppSyncApiEncrypted.Arn}/types/Query/fields/getCall'
+                - !Sub '${AppSyncApiEncrypted.Arn}/types/Query/*'
             - Effect: Allow
               Action:
                 - comprehend:DetectSentiment
-              Resource: "*"
+              Resource: '*'
             - Effect: Allow
               Action:
                 - events:PutEvents
               Resource:
-                - !Sub "arn:aws:events:${AWS::Region}:${AWS::AccountId}:event-bus/default"
+                - !Sub 'arn:aws:events:${AWS::Region}:${AWS::AccountId}:event-bus/default'
             - !If
               - ShouldEnableTranscriptLambdaHookFunction
               - Effect: Allow
                 Action:
                   - lambda:InvokeFunction
-                Resource: !Sub "${TranscriptLambdaHookFunctionArn}"
+                Resource: !Sub '${TranscriptLambdaHookFunctionArn}'
               - Ref: AWS::NoValue
             - !If
               - ShouldEnableStartOfCallLambdaHookFunction
               - Effect: Allow
                 Action:
                   - lambda:InvokeFunction
-                Resource: !Sub "${StartOfCallLambdaHookFunctionArn}"
+                Resource: !Sub '${StartOfCallLambdaHookFunctionArn}'
               - Ref: AWS::NoValue
             - !If
               - ShouldEnablePostCallSummaryLambdaHookFunction
               - Effect: Allow
                 Action:
                   - lambda:InvokeFunction
-                Resource: !Sub "${PostCallSummaryLambdaHookFunctionArn}"
+                Resource: !Sub '${PostCallSummaryLambdaHookFunctionArn}'
               - Ref: AWS::NoValue
             - !If
               - IsTranscriptSummaryEnabled
@@ -1258,7 +1233,7 @@ Resources:
         Variables:
           # XXX add log level parameter or map
           LOG_LEVEL: DEBUG
-          POWERTOOLS_METRICS_NAMESPACE: !Sub "TranscriptProcessor-${AWS::StackName}"
+          POWERTOOLS_METRICS_NAMESPACE: !Sub 'TranscriptProcessor-${AWS::StackName}'
           POWERTOOLS_SERVICE_NAME: TranscriptProcessor
           # XXX add trace parameter or map
           POWERTOOLS_TRACE_DISABLED: false
@@ -1279,8 +1254,7 @@ Resources:
           START_OF_CALL_LAMBDA_HOOK_FUNCTION_ARN: !Ref StartOfCallLambdaHookFunctionArn
           POST_CALL_SUMMARY_LAMBDA_HOOK_FUNCTION_ARN: !Ref PostCallSummaryLambdaHookFunctionArn
           TRANSCRIPT_LAMBDA_HOOK_FUNCTION_NONPARTIAL_ONLY: !Ref TranscriptLambdaHookFunctionNonPartialOnly
-          IS_TRANSCRIPT_SUMMARY_ENABLED:
-            !If [IsTranscriptSummaryEnabled, "true", "false"]
+          IS_TRANSCRIPT_SUMMARY_ENABLED: !If [IsTranscriptSummaryEnabled, 'true', 'false']
           ASYNC_TRANSCRIPT_SUMMARY_ORCHESTRATOR_ARN: !GetAtt AsyncTranscriptSummaryOrchestrator.Arn
           ASYNC_AGENT_ASSIST_ORCHESTRATOR_ARN: !GetAtt AsyncAgentAssistOrchestrator.Arn
           CALL_DATA_STREAM_NAME: !Ref CallDataStream
@@ -1349,22 +1323,22 @@ Resources:
     Properties:
       Description: Share Meeting Lambda Role
       AssumeRolePolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Principal:
               Service: lambda.amazonaws.com
             Action:
-              - "sts:AssumeRole"
+              - 'sts:AssumeRole'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
       Policies:
         - PolicyName: !Sub ${AWS::StackName}-ShareMeeting
           PolicyDocument:
-            Version: "2012-10-17"
+            Version: '2012-10-17'
             Statement:
-              - Effect: "Allow"
-                Action: 
+              - Effect: 'Allow'
+                Action:
                   - dynamodb:Query
                   - dynamodb:Scan
                   - dynamodb:GetItem
@@ -1389,7 +1363,7 @@ Resources:
     Metadata:
       BuildMethod: python3.12
     Properties:
-      Description: !Sub "Transcript Enrichment Python Layer for stack: ${AWS::StackName}"
+      Description: !Sub 'Transcript Enrichment Python Layer for stack: ${AWS::StackName}'
       ContentUri: ../source/lambda_layers/transcript_enrichment_layer
       CompatibleArchitectures:
         - arm64
@@ -1440,7 +1414,7 @@ Resources:
                   - dynamodb:GetItem
                   - dynamodb:PutItem
                   - dynamodb:UpdateItem
-                Resource: 
+                Resource:
                   - !GetAtt EventSourcingTable.Arn
                   - !GetAtt CallNoteTable.Arn
 
@@ -1456,7 +1430,7 @@ Resources:
       Timeout: 60
       Environment:
         Variables:
-          KB_ID: !Sub "<Placeholder>"
+          KB_ID: !Sub '<Placeholder>'
           MODEL_ID: !Ref BedrockModelId
       LoggingConfig:
         LogGroup:
@@ -1477,13 +1451,13 @@ Resources:
     Properties:
       Description: QueryKnowledgeBaseResolver Function Lambda Role
       AssumeRolePolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Principal:
               Service: lambda.amazonaws.com
             Action:
-              - "sts:AssumeRole"
+              - 'sts:AssumeRole'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
       Policies:
@@ -1493,14 +1467,14 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - "bedrock:Retrieve"
-                  - "bedrock:RetrieveAndGenerate"
+                  - 'bedrock:Retrieve'
+                  - 'bedrock:RetrieveAndGenerate'
                 #TODO: Figure out how to restrict to target Transcript KB - created in a parallel nested stack
-                Resource: !Sub "arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:knowledge-base/*"
+                Resource: !Sub 'arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:knowledge-base/*'
               - Effect: Allow
                 Action:
-                  - "bedrock:InvokeModel"
-                Resource: !Sub "arn:aws:bedrock:${AWS::Region}::foundation-model/${BedrockModelId}"
+                  - 'bedrock:InvokeModel'
+                Resource: !Sub 'arn:aws:bedrock:${AWS::Region}::foundation-model/${BedrockModelId}'
 
   AppSyncLambdaRole:
     Type: AWS::IAM::Role
@@ -1527,7 +1501,7 @@ Resources:
   AppSyncApiEncrypted:
     Type: AWS::AppSync::GraphQLApi
     Properties:
-      Name: !Sub "CallAnalytics-${AWS::StackName}"
+      Name: !Sub 'CallAnalytics-${AWS::StackName}'
       AuthenticationType: AMAZON_COGNITO_USER_POOLS
       UserPoolConfig:
         AppIdClientRegex: !Ref CognitoClientId
@@ -1896,20 +1870,7 @@ Resources:
       DataSourceName: !GetAtt KnowledgeBaseDataSource.Name
       TypeName: Query
       FieldName: queryKnowledgeBase
-      Runtime: 
-        Name: APPSYNC_JS
-        RuntimeVersion: 1.0.0
-      CodeS3Location: ../source/appsync/queryKnowledgeBase.js
-
-  QueryKnowledgeBaseResolver:
-    Type: AWS::AppSync::Resolver
-    DependsOn: AppSyncSchema
-    Properties:
-      ApiId: !GetAtt AppSyncApiEncrypted.ApiId
-      DataSourceName: !GetAtt KnowledgeBaseDataSource.Name
-      TypeName: Query
-      FieldName: queryKnowledgeBase
-      Runtime: 
+      Runtime:
         Name: APPSYNC_JS
         RuntimeVersion: 1.0.0
       CodeS3Location: ../source/appsync/queryKnowledgeBase.js
@@ -1924,7 +1885,7 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Principal:
@@ -1938,14 +1899,14 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - "s3:DeleteBucket"
-                  - "s3:ListBucket"
-                  - "s3:ListBucketVersions"
-                  - "s3:DeleteObject"
-                  - "s3:DeleteObjectVersion"
+                  - 's3:DeleteBucket'
+                  - 's3:ListBucket'
+                  - 's3:ListBucketVersions'
+                  - 's3:DeleteObject'
+                  - 's3:DeleteObjectVersion'
                 Resource:
-                  - !Sub "arn:aws:s3:::${WebAppBucket}"
-                  - !Sub "arn:aws:s3:::${WebAppBucket}/*"
+                  - !Sub 'arn:aws:s3:::${WebAppBucket}'
+                  - !Sub 'arn:aws:s3:::${WebAppBucket}/*'
           PolicyName: deleteBucketS3Policy
 
   BucketDeleteLambda:
@@ -1958,7 +1919,7 @@ Resources:
             reason: Customer can choose reserved concurrency based on their requirement.
     Type: AWS::Lambda::Function
     Properties:
-      Handler: "index.lambda_handler"
+      Handler: 'index.lambda_handler'
       Runtime: python3.12
       MemorySize: 128
       Timeout: 60
@@ -2035,29 +1996,29 @@ Resources:
             Principal:
               CanonicalUser: !GetAtt CloudFrontOriginAccessIdentity.S3CanonicalUserId
             Action: s3:GetObject
-            Resource: !Sub "${WebAppBucket.Arn}/*"
-          - Effect: "Deny"
+            Resource: !Sub '${WebAppBucket.Arn}/*'
+          - Effect: 'Deny'
             Action:
-              - "s3:*"
-            Principal: "*"
+              - 's3:*'
+            Principal: '*'
             Resource:
               - !GetAtt WebAppBucket.Arn
-              - !Sub "${WebAppBucket.Arn}/*"
+              - !Sub '${WebAppBucket.Arn}/*'
             Condition:
               Bool:
-                "aws:SecureTransport": false
+                'aws:SecureTransport': false
 
   CloudFrontOriginAccessIdentity:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
     Properties:
       CloudFrontOriginAccessIdentityConfig:
-        Comment: !Sub "CloudFront OAI for ${WebAppBucket}"
+        Comment: !Sub 'CloudFront OAI for ${WebAppBucket}'
 
   WebAppCloudFrontDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
-        Comment: !Sub "Web app cloudfront distribution ${AWS::StackName}"
+        Comment: !Sub 'Web app cloudfront distribution ${AWS::StackName}'
         CustomErrorResponses:
           # Send errors to index file
           - ErrorCachingMinTTL: 300
@@ -2091,19 +2052,18 @@ Resources:
           - Id: webapp-s3-bucket
             DomainName: !GetAtt WebAppBucket.RegionalDomainName
             S3OriginConfig:
-              OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}"
+              OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}'
         PriceClass: !Ref CloudFrontPriceClass
         Restrictions: !If
           - ShouldEnableGeoRestriction
           - GeoRestriction:
               RestrictionType: whitelist
-              Locations: !Split [",", !Ref CloudFrontAllowedGeos]
+              Locations: !Split [',', !Ref CloudFrontAllowedGeos]
           - GeoRestriction:
               RestrictionType: none
     Metadata:
       cfn_nag:
         rules_to_suppress:
           - id: W70
-            reason:
-              This is using Cloudfront default TLS, can be changed by customer
+            reason: This is using Cloudfront default TLS, can be changed by customer
               if needed.
