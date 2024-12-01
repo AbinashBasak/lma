@@ -184,8 +184,8 @@ cd $dir
 # changes when the extension folder contents change.
 # This allows us to force codebuild to re-run when the extension folder contents change.
 echo "Computing hash of extension folder contents"
-HASH=$(calculate_hash ".")
-zipfile=src-${HASH}.zip
+# HASH=$(calculate_hash ".")
+zipfile=src.zip
 BROWSER_EXTENSION_SRC_S3_LOCATION=${BUCKET}/${PREFIX_AND_VERSION}/${dir}/${zipfile}
 cd ..
 if haschanged $dir; then
@@ -209,9 +209,8 @@ dir=lma-virtual-participant-stack
 echo "PACKAGING $dir"
 pushd $dir
 echo "Computing hash of extension folder contents"
-# HASH=$(calculate_hash ".")
-# zipfile=src-${HASH}.zip
-zipfile=src.zip
+HASH=$(calculate_hash ".")
+zipfile=src-${HASH}.zip
 echo "Zipping source to ${tmpdir}/${zipfile}"
 zip -r ${tmpdir}/$zipfile . -x "node_modules/*" -x "build/*"
 echo "Upload source and template to S3"

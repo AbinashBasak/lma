@@ -8,7 +8,6 @@ import { Toaster } from 'components/ui/toaster';
 
 function App() {
 	const { loggedIn } = useUserContext();
-	console.log('loggedIn', loggedIn);
 
 	return (
 		<div className='w-[358px] rounded-[8px] overflow-hidden h-full'>
