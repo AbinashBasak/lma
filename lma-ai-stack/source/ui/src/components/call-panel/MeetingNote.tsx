@@ -21,7 +21,10 @@ const MeetingNote = ({ callId }: IMeetingNote) => {
 
   const fetchNote = async () => {
     try {
-      const res = await API.graphql({ query: getCallNote as any, variables: { callId } });
+      const res = (await API.graphql({ query: getCallNote as any, variables: { callId } })) as any;
+      if (res?.data?.getCallNote?.note) {
+        setNote(res.data.getCallNote.note);
+      }
       console.clear();
       console.log(res);
     } catch (error) {
