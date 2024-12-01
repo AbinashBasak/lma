@@ -209,8 +209,9 @@ dir=lma-virtual-participant-stack
 echo "PACKAGING $dir"
 pushd $dir
 echo "Computing hash of extension folder contents"
-HASH=$(calculate_hash ".")
-zipfile=src-${HASH}.zip
+# HASH=$(calculate_hash ".")
+# zipfile=src-${HASH}.zip
+zipfile=src.zip
 echo "Zipping source to ${tmpdir}/${zipfile}"
 zip -r ${tmpdir}/$zipfile . -x "node_modules/*" -x "build/*"
 echo "Upload source and template to S3"
