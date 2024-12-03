@@ -20,7 +20,7 @@ const DropDownMenuListItem = ({ list, icon, title }) => {
       </button>
       <ul>
         {list?.map((item) => (
-          <li className="relative group">
+          <li className="relative group" key={item.href}>
             <div className="absolute left-[15px] top-4 z-10 mt-[2px] h-full w-px bg-slate-200 group-last-of-type:hidden" />
             <Link
               onClick={() => setIsActive(item.href)}

@@ -63,7 +63,14 @@ const CallDetails = () => {
   if (!call) {
     return <Skeleton className="h-16 w-full" />;
   }
-  return <CallPanel item={call} setToolsOpen={setToolsOpen} callTranscriptPerCallId={callTranscriptPerCallId} />;
+  return (
+    <CallPanel
+      item={call}
+      setToolsOpen={setToolsOpen}
+      callTranscriptPerCallId={callTranscriptPerCallId}
+      getCallDetailsFromCallIds={getCallDetailsFromCallIds}
+    />
+  );
 };
 
 export default CallDetails;

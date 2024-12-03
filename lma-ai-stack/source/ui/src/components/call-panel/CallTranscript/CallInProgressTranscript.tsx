@@ -1,12 +1,9 @@
 import { TranslateTextCommand } from '@aws-sdk/client-translate';
-import { Logger } from 'aws-amplify';
 import { IN_PROGRESS_STATUS } from 'components/common/get-recording-status';
 import { useEffect, useRef, useState } from 'react';
 import { appendToPreviousSegment, shouldAppendToPreviousSegment } from './helpers';
 import { DEFAULT_OTHER_SPEAKER_NAME } from 'components/common/constants';
 import { TranscriptSegment } from './TranscriptSegment';
-
-const logger = new Logger('CallPanel');
 
 export const CallInProgressTranscript = ({
   item,
@@ -64,18 +61,16 @@ export const CallInProgressTranscript = ({
           };
           const command = new TranslateTextCommand(params);
   
-          logger.debug('Translate API being invoked for:', seg[i].transcript, targetLanguage);
   
           promises.push(
             translateClient.send(command).then(
               (data:any) => {
                 const n:any = {};
-                logger.debug('Translate API response:', seg[i].transcript, targetLanguage, data.TranslatedText);
                 n[k] = { cacheId: k, transcript: seg[i].transcript, translated: data.TranslatedText };
                 return n;
               },
               (error:any) => {
-                logger.debug('Error from translate:', error);
+                console.log('Error from translate:', error);
               },
             ),
           );
@@ -131,12 +126,10 @@ export const CallInProgressTranscript = ({
               };
               const command = new TranslateTextCommand(params);
     
-              // logger.debug('Translate API being invoked for:', c[c.length - 1].transcript, targetLanguage);
     
               try {
                 const data = await translateClient.send(command);
                 const o:any = {};
-                // logger.debug('Translate API response:', c[c.length - 1].transcript, data.TranslatedText);
                 o[k] = {
                   cacheId: k,
                   transcript: c[c.length - 1].transcript,
@@ -147,13 +140,12 @@ export const CallInProgressTranscript = ({
                   ...o,
                 }));
               } catch (error) {
-                logger.debug('Error from translate:', error);
+                console.log('Error from translate:', error);
               }
             }
           }
           if (Date.now() - lastUpdated > 500) {
             setUpdateFlag((state) => !state);
-            // logger.debug('Updating turn by turn with latest cache');
           }
         }
       setLastUpdated(Date.now());

@@ -20,13 +20,14 @@ import MeetingNote from './MeetingNote';
 interface ICallPanel {
   item: ICallDetails;
   callTranscriptPerCallId: any;
+  getCallDetailsFromCallIds: any;
 }
 
 const logger = new Logger('CallPanel');
 const MAXIMUM_ATTEMPTS = 100;
 const MAXIMUM_RETRY_DELAY = 1000;
 
-const CallPanel = ({ item, callTranscriptPerCallId }: ICallPanel) => {
+const CallPanel = ({ item, callTranscriptPerCallId, getCallDetailsFromCallIds }: ICallPanel) => {
   const { currentCredentials } = useAppContext() as any;
   const { settings } = useSettingsContext() as any;
 
@@ -65,7 +66,7 @@ const CallPanel = ({ item, callTranscriptPerCallId }: ICallPanel) => {
 
   return (
     <div>
-      <CallHeader data={item} callTranscriptPerCallId={callTranscriptPerCallId} />
+      <CallHeader data={item} callTranscriptPerCallId={callTranscriptPerCallId} getCallDetailsFromCallIds={getCallDetailsFromCallIds} />
 
       <div className="grid grid-cols-12 gap-4">
         <div className="flex flex-col gap-2 col-span-12 lg:col-span-2 lg:sticky lg:top-[122px] lg:h-screen lg:max-h-[calc(100vh_-_130px)] lg:overflow-x-clip">

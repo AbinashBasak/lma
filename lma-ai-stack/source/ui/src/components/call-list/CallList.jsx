@@ -4,13 +4,11 @@ import '@awsui/global-styles/index.css';
 
 import useCallsContext from '../../contexts/calls';
 import useSettingsContext from '../../contexts/settings';
-import useAppContext from '../../contexts/app';
 import { KEY_COLUMN_ID, DEFAULT_PREFERENCES, DEFAULT_SORT_COLUMN } from './config';
 
 import mapCallsAttributes from '../common/map-call-attributes';
 import useLocalStorage from '../common/local-storage';
 import { exportToExcel } from '../common/download-func';
-import { shareMeetings } from '../common/share-meeting';
 import { CallsCommonHeader } from './calls-table-config';
 import { Button } from '../ui/button';
 import DynamicPagination from '../ui/dynamic-pagination';
@@ -19,13 +17,12 @@ import { CallCard } from './CallCard';
 
 const CallList = () => {
   const [callList, setCallList] = useState([]);
-  const [shareResult, setShareResult] = useState(null);
 
   const { settings } = useSettingsContext();
-  const { calls, isCallsListLoading, setIsCallsListLoading, setPeriodsToLoad, setSelectedItems, periodsToLoad } = useCallsContext();
+  const { calls, isCallsListLoading, setIsCallsListLoading, setPeriodsToLoad, setSelectedItems, periodsToLoad, getCallDetailsFromCallIds } =
+    useCallsContext();
 
   const [preferences] = useLocalStorage('call-list-preferences', DEFAULT_PREFERENCES);
-  const { currentSession, currentCredentials } = useAppContext();
 
   const { items, collectionProps, paginationProps } = useCollection(callList, {
     pagination: { pageSize: preferences.pageSize },
@@ -46,11 +43,6 @@ const CallList = () => {
     setSelectedItems(collectionProps.selectedItems);
   }, [collectionProps.selectedItems]);
 
-  const shareMeeting = async (recipients) => {
-    const result = await shareMeetings(calls, collectionProps, recipients, settings, currentCredentials, currentSession);
-    setShareResult(result);
-  };
-
   return (
     <div>
       <div className="flex flex-col justify-between items-center gap-2 sm:flex-row mb-4">
@@ -59,15 +51,14 @@ const CallList = () => {
       </div>
       <div className="flex justify-end mb-6">
         <CallsCommonHeader
+          calls={calls}
           selectedItems={collectionProps.selectedItems}
           loading={isCallsListLoading}
           setIsLoading={setIsCallsListLoading}
           periodsToLoad={periodsToLoad}
           setPeriodsToLoad={setPeriodsToLoad}
+          getCallDetailsFromCallIds={getCallDetailsFromCallIds}
           downloadToExcel={() => exportToExcel(callList, 'Meeting-List')}
-          shareMeeting={shareMeeting}
-          shareResult={shareResult}
-          setShareResult={setShareResult}
         />
       </div>
 

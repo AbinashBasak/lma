@@ -17,7 +17,6 @@ import {
 import rehypeRaw from 'rehype-raw';
 import ReactMarkdown from 'react-markdown';
 import { TranslateTextCommand } from '@aws-sdk/client-translate';
-import { Logger } from 'aws-amplify';
 import { COMPREHEND_PII_TYPES, DEFAULT_OTHER_SPEAKER_NAME, LANGUAGE_CODES } from '../common/constants';
 
 import useSettingsContext from '../../contexts/settings';
@@ -29,8 +28,6 @@ import { getWeightedSentimentLabel } from '../common/sentiment';
 import './CallPanel.css';
 import { SentimentIcon } from '../sentiment-icon/SentimentIcon';
 import { downloadTranscriptAsExcel, downloadTranscriptAsText } from '../common/download-func';
-
-const logger = new Logger('CallPanel');
 
 // comprehend PII types
 const piiTypesSplitRegEx = new RegExp(`\\[(${COMPREHEND_PII_TYPES.join('|')})\\]`);
@@ -292,18 +289,15 @@ const CallInProgressTranscript = ({
         };
         const command = new TranslateTextCommand(params);
 
-        logger.debug('Translate API being invoked for:', seg[i].transcript, targetLanguage);
-
         promises.push(
           translateClient.send(command).then(
             (data) => {
               const n = {};
-              logger.debug('Translate API response:', seg[i].transcript, targetLanguage, data.TranslatedText);
               n[k] = { cacheId: k, transcript: seg[i].transcript, translated: data.TranslatedText };
               return n;
             },
             (error) => {
-              logger.debug('Error from translate:', error);
+              console.log('Error from translate:', error);
             },
           ),
         );
@@ -359,12 +353,9 @@ const CallInProgressTranscript = ({
             };
             const command = new TranslateTextCommand(params);
   
-            logger.debug('Translate API being invoked for:', c[c.length - 1].transcript, targetLanguage);
-  
             try {
               const data = await translateClient.send(command);
               const o = {};
-              logger.debug('Translate API response:', c[c.length - 1].transcript, data.TranslatedText);
               o[k] = {
                 cacheId: k,
                 transcript: c[c.length - 1].transcript,
@@ -375,13 +366,12 @@ const CallInProgressTranscript = ({
                 ...o,
               }));
             } catch (error) {
-              logger.debug('Error from translate:', error);
+              console.log('Error from translate:', error);
             }
           }
         }
         if (Date.now() - lastUpdated > 500) {
           setUpdateFlag((state) => !state);
-          logger.debug('Updating turn by turn with latest cache');
         }
       }
       setLastUpdated(Date.now());
@@ -581,7 +571,7 @@ export const CallTranscriptContainer = ({
         // eslint-disable-jsx-a11y/control-has-associated-label
         <div>
           <select value={targetLanguage} onChange={handleLanguageSelect}>
-            {LANGUAGE_CODES.map(({ value, label }) => <option value={value}>{label}</option>)}
+            {LANGUAGE_CODES.map(({ value, label }) => <option key={value} value={value}>{label}</option>)}
           </select>
         </div>
       );

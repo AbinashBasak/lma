@@ -356,7 +356,7 @@ const StreamAudio = () => {
         <div className="flex gap-1 justify-end mt-6">
           <p className="text-base text-gray-700">
             Stream ended:&nbsp;
-            <a className="text-xs text-blue-600" href={`#/calls/${recordedMeetingId}`} target="_blank">
+            <a className="text-xs text-blue-600" href={`#/calls/${recordedMeetingId}`} target="_blank" rel="noreferrer">
               Open recorded meeting
             </a>
           </p>

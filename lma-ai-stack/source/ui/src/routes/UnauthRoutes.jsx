@@ -8,9 +8,6 @@ import { AmplifyAuthContainer, AmplifyAuthenticator, AmplifySignIn, AmplifySignU
 
 import { LOGIN_PATH, LOGOUT_PATH, REDIRECT_URL_PARAM } from './constants';
 
-// this is set at build time depending on the AllowedSignUpEmailDomain CloudFormation parameter
-const { REACT_APP_SHOULD_HIDE_SIGN_UP = 'true' } = process.env;
-
 const UnauthRoutes = ({ location }) => (
   <Switch>
     <Route path={LOGIN_PATH}>

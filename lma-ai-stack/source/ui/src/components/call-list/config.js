@@ -1,3 +1,4 @@
+import React from 'react';
 import { ButtonDropdown, Icon, Link, StatusIndicator, Popover } from '@awsui/components-react';
 
 import { CALLS_PATH } from '../../routes/constants';
