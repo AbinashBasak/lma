@@ -5,6 +5,7 @@ import { SFNClient, StartSyncExecutionCommand } from '@aws-sdk/client-sfn';
 import useAppContext from '../../contexts/app';
 import awsExports from '../../aws-exports';
 import useSettingsContext from '../../contexts/settings';
+import { logger } from 'lib/logger';
 
 const MeetingForm = () => {
   const { user } = useAppContext();
@@ -25,8 +26,6 @@ const MeetingForm = () => {
   const submitMeetingForm = () => {
     // for later use when supporting scheduled meetings
     const meetingDateTimeFormatted = '';
-
-    console.log('User:', JSON.stringify(user));
 
     const userName = user?.attributes?.email || 'Unknown';
 
@@ -55,14 +54,13 @@ const MeetingForm = () => {
       }),
     };
 
-    console.log('StepFunctions params:', JSON.stringify(sfnParams));
     sfnClient
       .send(new StartSyncExecutionCommand(sfnParams))
       .then((data) => {
-        console.log('StepFunctions response:', JSON.stringify(data));
+        logger.log('StepFunctions response:', JSON.stringify(data));
       })
       .catch((error) => {
-        console.error('Error fetching StepFunctions response:', error);
+        logger.error('Error fetching StepFunctions response:', error);
       });
 
     setMeetingId('');

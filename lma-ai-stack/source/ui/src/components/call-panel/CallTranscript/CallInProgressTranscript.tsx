@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { appendToPreviousSegment, shouldAppendToPreviousSegment } from './helpers';
 import { DEFAULT_OTHER_SPEAKER_NAME } from 'components/common/constants';
 import { TranscriptSegment } from './TranscriptSegment';
+import { logger } from 'lib/logger';
 
 export const CallInProgressTranscript = ({
   item,
@@ -70,7 +71,7 @@ export const CallInProgressTranscript = ({
                 return n;
               },
               (error:any) => {
-                console.log('Error from translate:', error);
+                logger.log('Error from translate:', error);
               },
             ),
           );
@@ -140,7 +141,7 @@ export const CallInProgressTranscript = ({
                   ...o,
                 }));
               } catch (error) {
-                console.log('Error from translate:', error);
+                logger.log('Error from translate:', error);
               }
             }
           }

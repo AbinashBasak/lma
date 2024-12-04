@@ -2,13 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 import React from 'react';
 import { Box, LineChart } from '@awsui/components-react';
-import { Logger } from 'aws-amplify';
-
 import { getWeightedSentimentLabel } from '../common/sentiment';
 
-const logger = new Logger('SentimentCharts');
-
-/* eslint-disable react/prop-types, react/destructuring-assignment */
 export const VoiceToneFluctuationChart = ({ item, callTranscriptPerCallId }) => {
   const maxChannels = 6;
   const { callId } = item;
@@ -28,8 +23,6 @@ export const VoiceToneFluctuationChart = ({ item, callTranscriptPerCallId }) => 
         .reduce((p, c) => [...p, { x: new Date(c.endTime * 1000), y: c.sentimentWeighted }], [{ x: new Date(0), y: 0 }])
         .sort((a, b) => a.x - b.x),
     ); // eslint-disable-line function-paren-newline
-
-  logger.debug('sentimentPerChannel', sentimentPerChannel);
 
   return (
     <LineChart
@@ -72,7 +65,6 @@ export const VoiceToneFluctuationChart = ({ item, callTranscriptPerCallId }) => 
   );
 };
 
-/* eslint-disable react/prop-types, react/destructuring-assignment */
 export const SentimentFluctuationChart = ({ item, callTranscriptPerCallId }) => {
   const maxChannels = 6;
   const { callId } = item;
@@ -93,8 +85,6 @@ export const SentimentFluctuationChart = ({ item, callTranscriptPerCallId }) => 
         .reduce((p, c) => [...p, { x: new Date(c.endTime * 1000), y: c.sentimentWeighted }], [{ x: new Date(0), y: 0 }])
         .sort((a, b) => a.x - b.x),
     ); // eslint-disable-line function-paren-newline
-
-  logger.debug('sentimentPerChannel', sentimentPerChannel);
 
   return (
     <LineChart
@@ -156,8 +146,6 @@ export const SentimentPerQuarterChart = ({ item, callTranscriptPerCallId }) => {
         .filter((s) => s.EndOffsetMillis > 0)
         .reduce((p, c) => [...p, { x: new Date(c.EndOffsetMillis), y: c.Score }], [{ x: new Date(0), y: 0 }]),
     ); // eslint-disable-line function-paren-newline
-
-  logger.debug('sentimentByQuarterPerChannel', sentimentByQuarterPerChannel);
 
   return (
     <LineChart

@@ -3,12 +3,10 @@ import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import { Box, Button, Spinner, Header, Grid, Container, SpaceBetween, Input, Link } from '@awsui/components-react';
 import PropTypes from 'prop-types';
-import { API, Logger } from 'aws-amplify';
+import { API } from 'aws-amplify';
 import queryKnowledgeBase from '../../graphql/queries/queryKnowledgeBase';
 import { CALLS_PATH } from '../../routes/constants';
 import useSettingsContext from '../../contexts/settings';
-
-const logger = new Logger('queryKnowledgeBase');
 
 const ValueWithLabel = ({ label, index, children }) => (
   <>
@@ -31,7 +29,6 @@ const CustomLink = ({ href, children }) => {
   const handleClick = (e) => {
     e.preventDefault();
     // Handle the link click here
-    console.log('Link clicked:', href);
     // You can add your custom navigation logic here
   };
 
@@ -95,7 +92,6 @@ export const MeetingsQueryLayout = () => {
     setMeetingKbQueries(currentQueries);
     scrollToBottomOfChat();
 
-    logger.debug('Submitting GraphQL query:', query);
     const queryResponse = getMeetingsQueryResponseFromKB(query, kbSessionId);
 
     queryResponse.then((r) => {
@@ -142,11 +138,7 @@ export const MeetingsQueryLayout = () => {
       footer={
         <form onSubmit={onSubmit}>
           <Grid gridDefinition={[{ colspan: { default: 12, xxs: 9 } }, { default: 12, xxs: 3 }]}>
-            <Input
-              placeholder={`${placeholder}`}
-              onChange={({ detail }) => setInputQuery(detail.value)}
-              value={inputQuery}
-            />
+            <Input placeholder={`${placeholder}`} onChange={({ detail }) => setInputQuery(detail.value)} value={inputQuery} />
             <Button type="submit">Submit</Button>
           </Grid>
         </form>
@@ -156,7 +148,6 @@ export const MeetingsQueryLayout = () => {
         <SpaceBetween size="m">
           {meetingKbQueries.length > 0 ? (
             meetingKbQueries.map((entry, i) => (
-              // eslint-disable-next-line react/no-array-index-key
               <ValueWithLabel key={i} index={i} label={entry.label}>
                 {entry.value === '...' ? (
                   <div style={{ height: '30px' }}>

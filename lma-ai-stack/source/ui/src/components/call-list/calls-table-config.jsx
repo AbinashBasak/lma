@@ -11,9 +11,8 @@ import {
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Button } from '../ui/button';
 import { Download, RefreshCw } from 'lucide-react';
-import { shareModal, deleteModal } from '../common/meeting-controls';
+import { ShareModal, DeleteModal } from '../common/meeting-controls';
 
-/* eslint-disable react/prop-types, react/jsx-props-no-spreading */
 export const CallsPreferences = ({
   preferences,
   setPreferences,
@@ -43,7 +42,7 @@ export const CallsPreferences = ({
   />
 );
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 export const CallsCommonHeader = ({ resourceName = 'Meetings', ...props }) => {
   const onPeriodToLoadChange = (id) => {
     const shardCount = TIME_PERIOD_DROPDOWN_CONFIG[id].count;
@@ -76,8 +75,8 @@ export const CallsCommonHeader = ({ resourceName = 'Meetings', ...props }) => {
         <Button variant="outline" size="icon" disabled={props.loading} onClick={() => props.downloadToExcel()}>
           <Download />
         </Button>
-        {shareModal(props)}
-        {deleteModal(props)}
+        <ShareModal {...props} />
+        <DeleteModal {...props} />
       </div>
     </div>
   );

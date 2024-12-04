@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { TranslateClient } from '@aws-sdk/client-translate';
-import { Logger } from 'aws-amplify';
 import { StandardRetryStrategy } from '@aws-sdk/middleware-retry';
 
 import useSettingsContext from '../../contexts/settings';
@@ -23,7 +22,6 @@ interface ICallPanel {
   getCallDetailsFromCallIds: any;
 }
 
-const logger = new Logger('CallPanel');
 const MAXIMUM_ATTEMPTS = 100;
 const MAXIMUM_RETRY_DELAY = 1000;
 
@@ -55,7 +53,6 @@ const CallPanel = ({ item, callTranscriptPerCallId, getCallDetailsFromCallIds }:
        for an extended period.
      */
   useEffect(() => {
-    logger.debug('Translate client with refreshed credentials');
     translateClient = new TranslateClient({
       region: awsExports.aws_project_region,
       credentials: currentCredentials,

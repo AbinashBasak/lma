@@ -11,11 +11,9 @@ import '@awsui/global-styles/index.css';
 import MeetingForm from './MeetingForm';
 
 const VirtualParticipant = () => {
-  const test = '5';
   // const { currentSession } = useAppContext();
   // const { settings } = useSettingsContext();
   // const JWT_TOKEN = currentSession.getAccessToken().getJwtToken();
-  console.log(test);
 
   return (
     <Container header={<Header variant="h2">Virtual Participant (Preview)</Header>}>

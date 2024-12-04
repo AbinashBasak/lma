@@ -15,7 +15,7 @@ import {
   sendToEmail,
 } from './_helpers';
 import useCallsContext from 'contexts/calls';
-import { shareModal, deleteModal } from 'components/common/meeting-controls';
+import { ShareModal, DeleteModal } from 'components/common/meeting-controls';
 
 interface ICallHeader {
   data: ICallDetails;
@@ -88,8 +88,8 @@ const CallHeader = ({ data, callTranscriptPerCallId, getCallDetailsFromCallIds }
         <Button size="sm" variant="ghost" className="text-xs leading-none h-7 gap-1 px-2 text-gray-700" onClick={() => sendToEmail(data)}>
           <MailIcon /> Email
         </Button>
-        {shareModal(props)}
-        {deleteModal(props)}
+        <ShareModal {...props} />
+        <DeleteModal {...props} title="Delete" />
       </div>
     </div>
   );

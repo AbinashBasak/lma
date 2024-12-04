@@ -2,21 +2,18 @@
 // SPDX-License-Identifier: Apache-2.0
 import React, { useState } from 'react';
 import { Box, Button, Modal, SpaceBetween, TopNavigation } from '@awsui/components-react';
-import { Auth, Logger } from 'aws-amplify';
+import { Auth } from 'aws-amplify';
 
 import useAppContext from '../../contexts/app';
+import { logger } from 'lib/logger';
 
-const logger = new Logger('TopNavigation');
-
-/* eslint-disable react/prop-types */
 const SignOutModal = ({ visible, setVisible }) => {
   async function signOut() {
     try {
       await Auth.signOut();
-      logger.debug('signed out');
       window.location.reload();
     } catch (error) {
-      logger.error('error signing out: ', error);
+      logger.log('error signing out: ');
     }
   }
   return (

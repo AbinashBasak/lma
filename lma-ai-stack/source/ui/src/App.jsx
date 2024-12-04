@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 import React, { useState } from 'react';
-import { Amplify, Logger } from 'aws-amplify';
+// import { Amplify } from 'aws-amplify';
 import { HashRouter } from 'react-router-dom';
 
 import { AppContext } from './contexts/app';
@@ -13,9 +13,9 @@ import useCurrentSessionCreds from './hooks/use-current-session-creds';
 import Routes from './routes/Routes';
 
 import './App.css';
+import { logger } from 'lib/logger';
 
-Amplify.Logger.LOG_LEVEL = process.env.NODE_ENV === 'development' ? 'DEBUG' : 'WARNING';
-const logger = new Logger('App');
+// Amplify.Logger.LOG_LEVEL = process.env.NODE_ENV === 'development' ? 'DEBUG' : 'WARNING';
 
 const App = () => {
   const awsConfig = useAwsConfig();
@@ -24,7 +24,6 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState();
   const [navigationOpen, setNavigationOpen] = useState(true);
 
-  // eslint-disable-next-line react/jsx-no-constructed-context-values
   const appContextValue = {
     authState,
     awsConfig,

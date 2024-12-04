@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import { AppLayout, Flashbar } from '@awsui/components-react';
 
-import { Logger } from 'aws-amplify';
 import useNotifications from '../../hooks/use-notifications';
 
 import { appLayoutLabels } from '../common/labels';
@@ -15,13 +14,9 @@ import Breadcrumbs from './breadcrumbs';
 import useAppContext from '../../contexts/app';
 import VirtualParticipant from './VirtualParticipant';
 
-const logger = new Logger('VirtualParticipantLayout');
-
 const VirtualParticipantLayout = () => {
   const { navigationOpen, setNavigationOpen } = useAppContext();
   const { path } = useRouteMatch();
-  // console.log(`StreamAudioLayout Path: ${path}`);
-  logger.info('path ', path);
 
   const notifications = useNotifications();
   const [toolsOpen, setToolsOpen] = useState(false);

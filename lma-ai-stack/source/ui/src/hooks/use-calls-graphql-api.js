@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 import { useEffect, useState } from 'react';
-import { API, Logger, graphqlOperation } from 'aws-amplify';
+import { API, graphqlOperation } from 'aws-amplify';
 
 import useAppContext from '../contexts/app';
 
@@ -19,8 +19,7 @@ import onUnshareCall from '../graphql/queries/onUnshareCall';
 import getTranscriptSegments from '../graphql/queries/getTranscriptSegments';
 
 import { CALL_LIST_SHARDS_PER_DAY } from '../components/call-list/config';
-
-const logger = new Logger('useCallsGraphQlApi');
+import { logger } from 'lib/logger';
 
 const useCallsGraphQlApi = ({ initialPeriodsToLoad = CALL_LIST_SHARDS_PER_DAY * 2 } = {}) => {
   const [periodsToLoad, setPeriodsToLoad] = useState(initialPeriodsToLoad);
@@ -231,8 +230,6 @@ const useCallsGraphQlApi = ({ initialPeriodsToLoad = CALL_LIST_SHARDS_PER_DAY * 
   useEffect(() => {
     let subscription;
     logger.debug('onAddTranscriptSegment effect');
-
-    console.log('liveTranscriptCallId', liveTranscriptCallId);
 
     if (!liveTranscriptCallId) {
       // the component should set the live transcript contact id to null to unsubscribe

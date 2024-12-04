@@ -25,10 +25,8 @@ const MeetingNote = ({ callId }: IMeetingNote) => {
       if (res?.data?.getCallNote?.note) {
         setNote(res.data.getCallNote.note);
       }
-      console.clear();
-      console.log(res);
     } catch (error) {
-      console.log(error);
+      console.log('');
     }
   };
 
@@ -43,21 +41,6 @@ const MeetingNote = ({ callId }: IMeetingNote) => {
       id_token: `${currentSession.idToken.jwtToken}`,
       refresh_token: `${currentSession.refreshToken.token}`,
     },
-    // onOpen: (event) => {
-    //   console.log(`
-    //     DEBUG - [${new Date().toISOString()}]: Websocket onOpen Event: ${JSON.stringify(event)}
-    //   `);
-    // },
-    // onClose: (event) => {
-    //   console.log(`
-    //     DEBUG - [${new Date().toISOString()}]: Websocket onClose Event: ${JSON.stringify(event)}
-    //   `);
-    // },
-    // onError: (event) => {
-    //   console.log(`
-    //     DEBUG - [${new Date().toISOString()}]: Websocket onError Event: ${JSON.stringify(event)}
-    //   `);
-    // },
     shouldReconnect: () => true,
   });
 

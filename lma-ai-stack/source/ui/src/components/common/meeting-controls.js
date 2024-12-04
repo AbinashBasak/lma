@@ -2,14 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { API } from 'aws-amplify';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
-import { Share2Icon } from 'lucide-react';
+import { Share2Icon, Trash2Icon } from 'lucide-react';
 import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
-import { Box, ColumnLayout, Container, FormField, Header, Modal, Multiselect, SpaceBetween, TokenGroup } from '@awsui/components-react';
 
 import shareMeetings from '../../graphql/queries/shareMeetings';
 import deleteMeetings from '../../graphql/queries/deleteMeetings';
 import { useHistory, useParams } from 'react-router-dom';
+import { getCurrentRecipientsDescription, parseSharedWith } from './helpers';
+import { ShowCurrentRecipients, ShowNewRecipients } from './meeting-controls-components';
+
+const deleteConsentText = 'confirm';
 
 const getListKeys = (callId, createdAt) => {
   const SHARDS_IN_DAY = 6;
@@ -76,7 +79,7 @@ const invokeDeleteMeetings = async (props) => {
   return result;
 };
 
-export const shareModal = (props) => {
+export const ShareModal = (props) => {
   const { getCallDetailsFromCallIds } = props;
 
   const [share, setShare] = useState(false);
@@ -89,18 +92,7 @@ export const shareModal = (props) => {
   const [shareResult, setShareResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const modalContent = props.selectedItems.length === 1 ? `"${props.selectedItems[0].callId}"` : `${props.selectedItems.length} meetings`;
-  const currentRecipientsDescription =
-    props.selectedItems.length === 1
-      ? `The following users have access to "${props.selectedItems[0].callId}". Remove users who no longer need access.`
-      : `The following users have access to one or more of the selected meetings. If you share the meetings, all users in this list will have access to ${props.selectedItems.length} meetings. If you remove users, they will lose access to ${props.selectedItems.length} meetings.`;
-
-  const parseSharedWith = (sharedWithString) => {
-    return (sharedWithString || '')
-      .replace(/[[\]]/g, '')
-      .split(',')
-      .map((email) => email.trim())
-      .filter((email) => email);
-  };
+  const currentRecipientsDescription = getCurrentRecipientsDescription(props.selectedItems);
 
   const openShareSettings = async () => {
     setShare(true);
@@ -129,16 +121,18 @@ export const shareModal = (props) => {
   };
 
   const handleAddRecipients = () => {
-    if (addRecipients.trim()) {
-      const emailList = addRecipients.split(',').map((email) => email.trim());
-      const validEmails = emailList.filter((email) => {
-        // Basic email validation regex
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email) && !currentRecipients.includes(email) && !newRecipients.includes(email);
-      });
-      setNewRecipients([...newRecipients, ...validEmails]);
-      setAddRecipients('');
+    if (!addRecipients.trim()) {
+      return;
     }
+
+    const emailList = addRecipients.split(',').map((email) => email.trim());
+    const validEmails = emailList.filter((email) => {
+      // Basic email validation regex
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email) && !currentRecipients.includes(email) && !newRecipients.includes(email);
+    });
+    setNewRecipients([...newRecipients, ...validEmails]);
+    setAddRecipients('');
   };
 
   const handleSubmit = async (e) => {
@@ -155,49 +149,10 @@ export const shareModal = (props) => {
       setShareResult(result);
       await openShareSettings();
     } catch (error) {
-      console.log(error);
+      console.log('');
     }
 
     setSubmit(false);
-  };
-
-  const showCurrentRecipients = () => {
-    if (currentRecipients.length === 0) {
-      const placeholder = originalCount === 0 ? 'None' : 'You have removed all current users';
-      return (
-        <div>
-          <div>{placeholder}</div>
-        </div>
-      );
-    }
-
-    return (
-      <div>
-        <TokenGroup
-          items={currentRecipients.map((r) => ({ label: r, value: r }))}
-          onDismiss={({ detail: { itemIndex } }) => {
-            const updatedRecipients = currentRecipients.filter((_, index) => index !== itemIndex);
-            setCurrentRecipients(updatedRecipients);
-            setChanged(currentRecipients.length !== 0);
-            setShareResult(null);
-          }}
-          alignment="horizontal"
-        />
-      </div>
-    );
-  };
-
-  const showNewRecipients = () => {
-    return (
-      <TokenGroup
-        items={newRecipients.map((r) => ({ label: r, value: r }))}
-        onDismiss={({ detail: { itemIndex } }) => {
-          const updatedRecipients = newRecipients.filter((_, index) => index !== itemIndex);
-          setNewRecipients(updatedRecipients);
-        }}
-        alignment="horizontal"
-      />
-    );
   };
 
   return (
@@ -221,15 +176,14 @@ export const shareModal = (props) => {
       <Dialog open={share} onOpenChange={(openStatus) => !openStatus && closeShareSettings()}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-2xl mb-4">Share {modalContent}</DialogTitle>
+            <DialogTitle className="text-lg mb-4">Share {modalContent}</DialogTitle>
             <DialogDescription>
-              <Container header={<Header description={currentRecipientsDescription}>Existing Users</Header>}>{showCurrentRecipients()}</Container>
-              <Container
-                disableHeaderPaddings
-                header={<Header description="Enter a comma-separated list of email addresses and choose Add.">Add Users</Header>}
-              >
-                <div>
-                  <div direction="horizontal" size="xs">
+              <div className="border border-gray-3 rounded-lg px-4 py-3 mb-3">
+                <h3 className="text-base font-bold text-black">Add Users</h3>
+                <h4 className="text-xs text-gray-6">Enter a comma-separated list of email addresses and choose Add.</h4>
+                <div className="border-b border-gray-3 my-3" />
+                <div className="mb-2">
+                  <div className="flex gap-2">
                     <Input
                       value={addRecipients}
                       onChange={(event) => {
@@ -242,52 +196,48 @@ export const shareModal = (props) => {
                     <Button onClick={handleAddRecipients}>Add</Button>
                   </div>
                 </div>
-                {showNewRecipients()}
-              </Container>
+                <ShowNewRecipients newRecipients={newRecipients} setNewRecipients={setNewRecipients} />
+              </div>
+              <div className="border border-gray-3 rounded-lg px-4 py-3">
+                <h3 className="text-base font-bold text-black">Existing Users</h3>
+                <h4 className="text-xs text-gray-6">{currentRecipientsDescription}</h4>
+                <div className="border-b border-gray-3 my-3" />
+                <ShowCurrentRecipients
+                  currentRecipients={currentRecipients}
+                  originalCount={originalCount}
+                  setCurrentRecipients={setCurrentRecipients}
+                  setChanged={setChanged}
+                  setShareResult={setShareResult}
+                />
+              </div>
               <div>
-                <form onSubmit={(e) => e.preventDefault()}>
-                  <div>
-                    <p>Recipients</p>
-                    {/* <Multiselect
-                      selectedOptions={meetingRecipients.map((r) => ({ label: r, value: r }))}
-                      onChange={({ detail }) => setMeetingRecipients(detail.selectedOptions.map((o) => o.value))}
-                      options={meetingRecipients.map((r) => ({ label: r, value: r }))}
-                      removeSelectedOptions
-                      placeholder="No recipients added"
-                    /> */}
-                  </div>
-                  <div>
-                    <Input value={newRecipients} onChange={(event) => setNewRecipients(event.target.value)} placeholder="Please enter email..." />
-                    <Button onClick={handleAddRecipients}>Add</Button>
-                  </div>
-                  {shareResult ? (
-                    <Alert className="mt-2 border-cyan-500" variant="default">
-                      <AlertTitle className="text-base text-cyan-900">Message</AlertTitle>
-                      <AlertDescription className="text-sm text-cyan-800">{shareResult}</AlertDescription>
-                    </Alert>
-                  ) : null}
+                {shareResult ? (
+                  <Alert className="mt-2 border-cyan-500" variant="default">
+                    <AlertTitle className="text-base text-cyan-900">Message</AlertTitle>
+                    <AlertDescription className="text-sm text-cyan-800">{shareResult}</AlertDescription>
+                  </Alert>
+                ) : null}
 
-                  <div className="flex justify-end gap-2 mt-4">
-                    <Button
-                      variant="outline"
-                      type="button"
-                      className="ring-red-600 text-red-600 hover:bg-red-50"
-                      onClick={closeShareSettings}
-                      disabled={isLoading}
-                    >
-                      Close
-                    </Button>
-                    <Button
-                      variant="outline"
-                      disabled={
-                        isLoading || submit || !changed || (currentRecipients.length === 0 && originalCount === 0 && newRecipients.length === 0)
-                      }
-                      onClick={handleSubmit}
-                    >
-                      Submit
-                    </Button>
-                  </div>
-                </form>
+                <div className="flex justify-end gap-2 mt-4">
+                  <Button
+                    variant="outline"
+                    type="button"
+                    className="ring-red-600 text-red-600 hover:bg-red-50"
+                    onClick={closeShareSettings}
+                    disabled={isLoading}
+                  >
+                    Close
+                  </Button>
+                  <Button
+                    variant="outline"
+                    disabled={
+                      isLoading || submit || !changed || (currentRecipients.length === 0 && originalCount === 0 && newRecipients.length === 0)
+                    }
+                    onClick={handleSubmit}
+                  >
+                    Submit {submit || isLoading ? '...' : ''}
+                  </Button>
+                </div>
               </div>
             </DialogDescription>
           </DialogHeader>
@@ -297,19 +247,21 @@ export const shareModal = (props) => {
   );
 };
 
-export const deleteModal = (props) => {
+export const DeleteModal = (props) => {
   const [visible, setVisible] = useState(false);
   const [deleteDisabled, setDeleteDisabled] = useState(false);
   const [deleteResult, setDeleteResult] = useState(null);
   const [deletedCallIds, setDeletedCallIds] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const history = useHistory();
   const { callId } = useParams();
-  const deleteConsentText = 'confirm';
+
   const modalContent = props.selectedItems.length === 1 ? `"${props.selectedItems[0].callId}"` : `${props.selectedItems.length} meetings`;
 
   const [deleteInputText, setDeleteInputText] = useState('');
   const inputMatchesConsentText = deleteInputText.toLowerCase() === deleteConsentText;
+
   useEffect(() => {
     setDeleteInputText('');
   }, [visible]);
@@ -325,17 +277,25 @@ export const deleteModal = (props) => {
     setVisible(false);
     setDeleteResult(null);
     setDeletedCallIds([]);
-    if (callId) {
-      history.goBack();
-    }
   };
 
   const handleDelete = async (e) => {
     e.preventDefault();
     setDeleteDisabled(true);
+    setIsLoading(true);
     setDeletedCallIds(props.selectedItems.map((c) => c.callId));
-    const result = await invokeDeleteMeetings(props);
-    setDeleteResult(result);
+
+    try {
+      const result = await invokeDeleteMeetings(props);
+      setDeleteResult(result);
+      if (callId) {
+        history.goBack();
+      }
+    } catch (error) {
+      console.log('');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleDeleteSubmit = (event) => {
@@ -346,94 +306,101 @@ export const deleteModal = (props) => {
   };
 
   return (
-    <SpaceBetween size="xxs" direction="horizontal">
-      <Button iconName="remove" variant="normal" loading={props.loading} disabled={props.selectedItems.length === 0} onClick={openDeleteSettings} />
-      {props.selectedItems.length > 0 ? (
-        <Modal
-          visible={visible}
-          onDismiss={closeDeleteSettings}
-          header={<h3>Delete {modalContent}</h3>}
-          closeAriaLabel="Close dialog"
-          footer={
-            <Box float="right">
-              <SpaceBetween direction="horizontal" size="xs">
-                <Button variant="link" onClick={closeDeleteSettings}>
-                  Close
-                </Button>
-                <Button variant="primary" onClick={handleDelete} disabled={!inputMatchesConsentText || deleteDisabled} data-testid="submit">
-                  Delete
-                </Button>
-              </SpaceBetween>
-            </Box>
-          }
+    <div>
+      {props.title ? (
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={openDeleteSettings}
+          disabled={props.selectedItems.length === 0 || props.loading}
+          className="text-xs leading-none h-7 gap-1 px-2 text-gray-700"
         >
-          <SpaceBetween size="m">
-            {props.selectedItems.length > 1 ? (
-              <Box variant="span">
-                Permanently delete{' '}
-                <Box variant="span" fontWeight="bold">
-                  {props.selectedItems.length} meetings
-                </Box>
-                ? You can’t undo this action.
-              </Box>
-            ) : (
-              <Box variant="span">
-                Permanently delete meeting{' '}
-                <Box variant="span" fontWeight="bold">
-                  {props.selectedItems[0].callId}
-                </Box>
-                ? You can’t undo this action.
-              </Box>
-            )}
-
-            <Alert type="warning" statusIconAriaLabel="Warning">
-              Proceeding with this action will delete the
-              {props.selectedItems.length > 1 ? ' meetings with all their content. ' : ' meeting with all its content.'}{' '}
-            </Alert>
-
-            <Box>To avoid accidental deletions, we ask you to provide additional written consent.</Box>
-
-            <form onSubmit={handleDeleteSubmit}>
-              <FormField label={`To confirm this deletion, type "${deleteConsentText}".`}>
-                <ColumnLayout columns={1}>
-                  <Input
-                    placeholder={deleteConsentText}
-                    onChange={(event) => setDeleteInputText(event.target.value)}
-                    value={deleteInputText}
-                    ariaRequired
-                  />
-                  <Alert type="success" visible={deleteResult}>
-                    {deleteResult}
-                  </Alert>
-                </ColumnLayout>
-              </FormField>
-            </form>
-          </SpaceBetween>
-        </Modal>
+          <Trash2Icon /> {props.title || null}
+        </Button>
       ) : (
-        <Modal
-          visible={visible}
-          onDismiss={closeDeleteSettings}
-          header={<h3>Delete {deletedCallIds.length === 1 ? `"${deletedCallIds[0]}"` : `${deletedCallIds.length} meetings`}</h3>}
-          closeAriaLabel="Close dialog"
-          footer={
-            <Box float="right">
-              <SpaceBetween direction="horizontal" size="xs">
-                <Button variant="link" onClick={closeDeleteSettings}>
+        <Button variant="outline" size="icon" onClick={openDeleteSettings} disabled={props.selectedItems.length === 0 || props.loading}>
+          <Trash2Icon />
+        </Button>
+      )}
+
+      {props.selectedItems.length > 0 ? (
+        <Dialog open={visible} onOpenChange={(openStatus) => !openStatus && closeDeleteSettings()}>
+          <DialogContent className="gap-3">
+            <DialogHeader className="border-b border-gray-3">
+              <DialogTitle className="text-lg mb-2">Delete {modalContent}</DialogTitle>
+            </DialogHeader>
+            <div>
+              <p className="text-sm text-black mb-2">
+                {props.selectedItems.length > 1 ? (
+                  <>
+                    Permanently delete <span className="font-bold">{props.selectedItems.length} meetings</span>? You can't undo this action.
+                  </>
+                ) : (
+                  <>
+                    Permanently delete meeting <span className="font-bold">{props.selectedItems[0].callId}</span>? You can't undo this action.
+                  </>
+                )}
+              </p>
+              <Alert variant="default" className="mb-3 border-yellow-800 bg-yellow-50">
+                <AlertDescription className="text-sm text-cyan-800">
+                  Proceeding with this action will delete the
+                  {props.selectedItems.length > 1 ? ' meetings with all their content. ' : ' meeting with all its content.'}{' '}
+                </AlertDescription>
+              </Alert>
+              <p className="text-sm text-gray-6 mb-3">To avoid accidental deletions, we ask you to provide additional written consent.</p>
+              <form onSubmit={handleDeleteSubmit}>
+                <p className="text-sm mb-1">To confirm this deletion, type "{deleteConsentText}".</p>
+                <Input placeholder={deleteConsentText} onChange={(event) => setDeleteInputText(event.target.value)} value={deleteInputText} />
+              </form>
+
+              <div>
+                {deleteResult ? (
+                  <Alert className="mt-2 border-cyan-500" variant="default">
+                    <AlertTitle className="text-base text-cyan-900">Message</AlertTitle>
+                    <AlertDescription className="text-sm text-cyan-800">{deleteResult}</AlertDescription>
+                  </Alert>
+                ) : null}
+
+                <div className="flex justify-end gap-2 mt-4">
+                  <Button variant="outline" type="button" className="ring-red-600 text-red-600 hover:bg-red-50" onClick={closeDeleteSettings}>
+                    Close
+                  </Button>
+                  <Button variant="outline" disabled={!inputMatchesConsentText || deleteDisabled} onClick={handleDelete}>
+                    Delete{isLoading ? '...' : ''}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      ) : (
+        <Dialog open={visible} onOpenChange={(openStatus) => !openStatus && closeDeleteSettings()}>
+          <DialogContent className="gap-3">
+            <DialogHeader className="border-b border-gray-3">
+              <DialogTitle className="text-lg mb-2">
+                Delete {deletedCallIds.length === 1 ? `"${deletedCallIds[0]}"` : `${deletedCallIds.length} meetings`}
+              </DialogTitle>
+            </DialogHeader>
+            <div>
+              {deleteResult ? (
+                <Alert className="mt-2 border-cyan-500" variant="default">
+                  <AlertTitle className="text-base text-cyan-900">Message</AlertTitle>
+                  <AlertDescription className="text-sm text-cyan-800">{deleteResult}</AlertDescription>
+                </Alert>
+              ) : null}
+
+              <div className="flex justify-end gap-2 mt-4">
+                <Button variant="outline" type="button" className="ring-red-600 text-red-600 hover:bg-red-50" onClick={closeDeleteSettings}>
                   Close
                 </Button>
-                <Button variant="primary" onClick={handleDelete} disabled={!inputMatchesConsentText || deleteDisabled} data-testid="submit">
-                  Delete
+                <Button variant="outline" disabled={!inputMatchesConsentText || deleteDisabled} onClick={handleDelete}>
+                  Delete{isLoading ? '...' : ''}
                 </Button>
-              </SpaceBetween>
-            </Box>
-          }
-        >
-          <Alert type="success" visible={deleteResult}>
-            {deleteResult}
-          </Alert>
-        </Modal>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
-    </SpaceBetween>
+    </div>
   );
 };

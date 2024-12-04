@@ -1,11 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 import { useEffect, useState } from 'react';
-import { Logger } from 'aws-amplify';
-
 import useAppContext from '../contexts/app';
-
-const logger = new Logger('useNotifications');
 
 const dismissedInitialNotificationsStorageKey = 'dismissedInitialNotifications';
 const initialNotifications = [
@@ -30,13 +26,10 @@ const useNotifications = () => {
       let dismissedInitialNotificationIds = [];
       try {
         const dismissedStored = JSON.parse(localStorage.getItem(dismissedInitialNotificationsStorageKey) || '[]');
-        if (!Array.isArray(dismissedStored)) {
-          logger.warn('invalid format of dismisssed notifications from local storage');
-        } else {
+        if (Array.isArray(dismissedStored)) {
           dismissedInitialNotificationIds = dismissedStored;
         }
       } catch {
-        logger.warn('failed to parse dismisssed notifications from local storage');
         return [];
       }
 
@@ -90,8 +83,6 @@ const useNotifications = () => {
     if (sameErrorInMs.length) {
       return;
     }
-
-    logger.debug('setting error notification', errorMessage);
 
     const errorNotification = {
       type: 'error',

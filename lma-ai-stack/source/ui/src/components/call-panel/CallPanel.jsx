@@ -297,7 +297,7 @@ const CallInProgressTranscript = ({
               return n;
             },
             (error) => {
-              console.log('Error from translate:', error);
+              console.log('Error from translate:');
             },
           ),
         );
@@ -366,7 +366,7 @@ const CallInProgressTranscript = ({
                 ...o,
               }));
             } catch (error) {
-              console.log('Error from translate:', error);
+              console.log('Error from translate:');
             }
           }
         }
@@ -580,7 +580,6 @@ export const CallTranscriptContainer = ({
   };
 
   const downloadTranscript = (option) => {
-    console.log('option', option);
     if (option.detail.id === 'text') {
       downloadTranscriptAsText(callTranscriptPerCallId, item);
     } else if (option.detail.id === 'excel') {
