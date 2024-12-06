@@ -11,7 +11,7 @@ const useUserAuthState = (awsconfig) => {
     onAuthUIStateChange((nextAuthState, authData) => {
       setAuthState(nextAuthState);
       setUser(authData);
-      if (authData) {
+      if (authData && authData.signInUserSession) {
         // prettier-ignore
         localStorage.setItem(`${authData.pool.clientId}idtokenjwt`, authData.signInUserSession.idToken.jwtToken);
         // prettier-ignore
@@ -22,7 +22,7 @@ const useUserAuthState = (awsconfig) => {
     });
   }, [awsconfig]);
 
-  return { authState, user };
+  return { authState, setAuthState, user, setUser };
 };
 
 export default useUserAuthState;

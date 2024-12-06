@@ -13,17 +13,27 @@ import {
   DropdownMenuTrigger,
 } from 'components/ui/dropdown-menu';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from 'components/ui/sidebar';
+import { Auth } from 'aws-amplify';
 
-export function NavUser({
-  user,
-}: {
+interface INavUser {
   user: {
     name: string;
     email: string;
     avatar?: string;
   };
-}) {
+}
+
+export function NavUser({ user }: INavUser) {
   const { isMobile } = useSidebar();
+
+  async function signOut() {
+    try {
+      await Auth.signOut();
+      window.location.reload();
+    } catch (error) {
+      //
+    }
+  }
 
   return (
     <SidebarMenu>
@@ -83,7 +93,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={signOut}>
               <LogOut />
               Log out
             </DropdownMenuItem>

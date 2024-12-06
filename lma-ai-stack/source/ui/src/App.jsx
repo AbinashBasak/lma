@@ -14,24 +14,27 @@ import Routes from './routes/Routes';
 
 import './App.css';
 import { logger } from 'lib/logger';
+import { Toaster } from 'components/ui/toaster';
 
 // Amplify.Logger.LOG_LEVEL = process.env.NODE_ENV === 'development' ? 'DEBUG' : 'WARNING';
 
 const App = () => {
   const awsConfig = useAwsConfig();
-  const { authState, user } = useUserAuthState(awsConfig);
+  const { authState, setAuthState, user, setUser } = useUserAuthState(awsConfig);
   const { currentSession, currentCredentials } = useCurrentSessionCreds({ authState });
   const [errorMessage, setErrorMessage] = useState();
   const [navigationOpen, setNavigationOpen] = useState(true);
 
   const appContextValue = {
     authState,
+    setAuthState,
     awsConfig,
     errorMessage,
     currentCredentials,
     currentSession,
     setErrorMessage,
     user,
+    setUser,
     navigationOpen,
     setNavigationOpen,
   };
@@ -43,6 +46,7 @@ const App = () => {
         <HashRouter>
           <Routes />
         </HashRouter>
+        <Toaster />
       </AppContext.Provider>
     </div>
   );
