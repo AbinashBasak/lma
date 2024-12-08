@@ -52,80 +52,80 @@ import { cloneDeep } from 'lodash';
 // }
 
 export const useLiveTranscript = (callId?: string) => {
-	const [list, setList] = useState<ITranscriptSegment[]>([]);
+    const [list, setList] = useState<ITranscriptSegment[]>([]);
 
-	const handleCallTranscriptSegmentMessage = useCallback(
-		(transcriptSegment: ITranscriptSegment) => {
-			setList((previousList) => {
-				const newMatchList: ITranscriptSegment[] = [];
-				const newUnMatchList: ITranscriptSegment[] = [];
+    const handleCallTranscriptSegmentMessage = useCallback(
+        (transcriptSegment: ITranscriptSegment) => {
+            setList((previousList) => {
+                const newMatchList: ITranscriptSegment[] = [];
+                const newUnMatchList: ITranscriptSegment[] = [];
 
-				previousList.forEach((item) => {
-					if (item.SegmentId === transcriptSegment.SegmentId) {
-						newMatchList.push(item);
-					} else {
-						newUnMatchList.push(item);
-					}
-				});
+                previousList.forEach((item) => {
+                    if (item.SegmentId === transcriptSegment.SegmentId) {
+                        newMatchList.push(item);
+                    } else {
+                        newUnMatchList.push(item);
+                    }
+                });
 
-				const lastMatchRecord = newMatchList.pop();
-				const shouldReplaceLastItem =
-					(lastMatchRecord?.IsPartial === false && transcriptSegment?.IsPartial === true) ||
-					(lastMatchRecord?.IsPartial === false && lastMatchRecord?.Sentiment);
+                const lastMatchRecord = newMatchList.pop();
+                const shouldReplaceLastItem =
+                    (lastMatchRecord?.IsPartial === false && transcriptSegment?.IsPartial === true) ||
+                    (lastMatchRecord?.IsPartial === false && lastMatchRecord?.Sentiment);
 
-				return [
-					...cloneDeep(newUnMatchList),
-					// avoid overwriting a final segment or one with sentiment with a late arriving segment
-					shouldReplaceLastItem ? lastMatchRecord : transcriptSegment,
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				].sort((a, b) => (new Date(a.CreatedAt) as any) - (new Date(b.CreatedAt) as any));
-			});
-		},
-		[setList]
-	);
+                return [
+                    ...cloneDeep(newUnMatchList),
+                    // avoid overwriting a final segment or one with sentiment with a late arriving segment
+                    shouldReplaceLastItem ? lastMatchRecord : transcriptSegment,
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                ].sort((a, b) => (new Date(a.CreatedAt) as any) - (new Date(b.CreatedAt) as any));
+            });
+        },
+        [setList],
+    );
 
-	useEffect(() => {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		let subscription: any = null;
+    useEffect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let subscription: any = null;
 
-		if (!callId) {
-			// the component should set the live transcript contact id to null to unsubscribe
-			if (subscription?.unsubscribe) {
-				subscription.unsubscribe();
-			}
-			return;
-		}
-		const client = generateClient();
+        if (!callId) {
+            // the component should set the live transcript contact id to null to unsubscribe
+            if (subscription?.unsubscribe) {
+                subscription.unsubscribe();
+            }
+            return;
+        }
+        const client = generateClient();
 
-		subscription = client
-			.graphql<GraphQLSubscription<ITranscript>>({
-				query: subscriptionQuery,
-				variables: { callId },
-			})
-			.subscribe({
-				next: async ({ data }) => {
-					const transcriptSegmentValue = data?.onAddTranscriptSegment;
-					if (!transcriptSegmentValue) {
-						return;
-					}
-					if (callId !== transcriptSegmentValue.CallId) {
-						return;
-					}
-					if (transcriptSegmentValue.Transcript && transcriptSegmentValue.SegmentId) {
-						handleCallTranscriptSegmentMessage(transcriptSegmentValue);
-					}
-				},
-				error: (error) => {
-					console.log(error);
-					// setErrorMessage('transcript update network subscription failed - please reload the page');
-				},
-			});
+        subscription = client
+            .graphql<GraphQLSubscription<ITranscript>>({
+                query: subscriptionQuery,
+                variables: { callId },
+            })
+            .subscribe({
+                next: async ({ data }) => {
+                    const transcriptSegmentValue = data?.onAddTranscriptSegment;
+                    if (!transcriptSegmentValue) {
+                        return;
+                    }
+                    if (callId !== transcriptSegmentValue.CallId) {
+                        return;
+                    }
+                    if (transcriptSegmentValue.Transcript && transcriptSegmentValue.SegmentId) {
+                        handleCallTranscriptSegmentMessage(transcriptSegmentValue);
+                    }
+                },
+                error: (error) => {
+                    console.log(error);
+                    // setErrorMessage('transcript update network subscription failed - please reload the page');
+                },
+            });
 
-		return () => {
-			console.log('unsubscribed from transcript segments');
-			subscription.unsubscribe();
-		};
-	}, [callId]);
+        return () => {
+            console.log('unsubscribed from transcript segments');
+            subscription.unsubscribe();
+        };
+    }, [callId]);
 
-	return list;
+    return list;
 };

@@ -43,6 +43,10 @@ export default function AmplifySignUp() {
       const data = await authSignUp({
         username: payload.email,
         password: payload.password,
+        attributes: {
+          email: payload.email,
+          name: 'Test Name',
+        },
       });
 
       if (data.userConfirmed) {

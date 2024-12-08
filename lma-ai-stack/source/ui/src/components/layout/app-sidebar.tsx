@@ -71,6 +71,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const userId = user?.attributes?.email || 'user';
   const userName = user?.username || 'User Name';
 
+  console.log(user);
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>

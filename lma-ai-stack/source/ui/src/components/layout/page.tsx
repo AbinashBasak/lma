@@ -26,7 +26,7 @@ export default function Page({ children, breadcrumbs }: IPage) {
             <Breadcrumb>
               <BreadcrumbList>
                 {breadcrumbs?.map((breadcrumb, index) => (
-                  <React.Fragment>
+                  <React.Fragment key={index}>
                     <BreadcrumbItem className={cn(index !== breadcrumbs.length - 1 && 'hidden md:block')}>
                       {breadcrumb.url ? (
                         <BreadcrumbLink className="text-xs" asChild>

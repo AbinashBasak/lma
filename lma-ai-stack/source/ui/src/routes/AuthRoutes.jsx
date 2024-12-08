@@ -1,5 +1,3 @@
-// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
 import React, { lazy, Suspense } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route, Switch } from 'react-router-dom';
@@ -11,6 +9,7 @@ import useParameterStore from '../hooks/use-parameter-store';
 import useAppContext from '../contexts/app';
 
 import { CALLS_PATH, DEFAULT_PATH, LOGIN_PATH, LOGOUT_PATH, STREAM_AUDIO_PATH, VIRTUAL_PARTICIPANT_PATH, MEETINGS_QUERY_PATH } from './constants';
+import UserForm from './UserForm';
 
 // Lazy-loaded components
 const CallsRoutes = lazy(() => import('./CallsRoutes'));
@@ -21,10 +20,7 @@ const MeetingsQueryRoutes = lazy(() => import('./MeetingsQueryRoutes'));
 const AuthRoutes = ({ redirectParam }) => {
   const { currentCredentials } = useAppContext();
   const settings = useParameterStore(currentCredentials);
-
-  const settingsContextValue = {
-    settings,
-  };
+  const settingsContextValue = { settings };
 
   return (
     <SettingsContext.Provider value={settingsContextValue}>
@@ -53,6 +49,7 @@ const AuthRoutes = ({ redirectParam }) => {
           </Route>
         </Switch>
       </Suspense>
+      <UserForm />
     </SettingsContext.Provider>
   );
 };

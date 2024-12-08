@@ -1,28 +1,45 @@
-// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
-import { useState, useEffect } from 'react';
-import { onAuthUIStateChange } from '@aws-amplify/ui-components';
+import { AuthState } from '@aws-amplify/ui-components';
+import { Auth } from 'aws-amplify';
+import { useEffect, useState } from 'react';
 
-const useUserAuthState = (awsconfig) => {
-  const [authState, setAuthState] = useState();
+const useUserAuthState = () => {
+  const [authState, setAuthState] = useState(AuthState.Loading);
   const [user, setUser] = useState();
 
-  useEffect(() => {
-    onAuthUIStateChange((nextAuthState, authData) => {
-      setAuthState(nextAuthState);
-      setUser(authData);
-      if (authData && authData.signInUserSession) {
-        // prettier-ignore
-        localStorage.setItem(`${authData.pool.clientId}idtokenjwt`, authData.signInUserSession.idToken.jwtToken);
-        // prettier-ignore
-        localStorage.setItem(`${authData.pool.clientId}accesstokenjwt`, authData.signInUserSession.accessToken.jwtToken);
-        // prettier-ignore
-        localStorage.setItem(`${authData.pool.clientId}refreshtoken`, authData.signInUserSession.refreshToken.jwtToken);
-      }
-    });
-  }, [awsconfig]);
+  const checkUser = async () => {
+    if (!Auth || typeof Auth.currentAuthenticatedUser !== 'function') {
+      return;
+    }
 
-  return { authState, setAuthState, user, setUser };
+    return Auth.currentAuthenticatedUser()
+      .then((user) => {
+        if (user) {
+          setAuthState(AuthState.SignedIn);
+          setUser(user);
+        }
+      })
+      .catch(() => {
+        setAuthState(AuthState.SignIn);
+      });
+  };
+  useEffect(() => {
+    checkUser();
+  }, []);
+
+  const handleOnAuthUIStateChange = (nextAuthState, authData) => {
+    setAuthState(nextAuthState);
+    setUser(authData);
+    if (authData && authData.signInUserSession) {
+      // prettier-ignore
+      localStorage.setItem(`${authData.pool.clientId}idtokenjwt`, authData.signInUserSession.idToken.jwtToken);
+      // prettier-ignore
+      localStorage.setItem(`${authData.pool.clientId}accesstokenjwt`, authData.signInUserSession.accessToken.jwtToken);
+      // prettier-ignore
+      localStorage.setItem(`${authData.pool.clientId}refreshtoken`, authData.signInUserSession.refreshToken.jwtToken);
+    }
+  };
+
+  return { authState, setAuthState, user, setUser, handleOnAuthUIStateChange };
 };
 
 export default useUserAuthState;

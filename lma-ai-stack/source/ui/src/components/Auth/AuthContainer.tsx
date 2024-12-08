@@ -1,11 +1,11 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { AuthState, CognitoUserInterface } from '@aws-amplify/ui-components';
-import { Auth } from 'aws-amplify';
 import AmplifySignIn from 'components/Auth/AmplifySignIn';
 import AmplifySignUp from './AmplifySignUp';
 import VerifyContact from './VerifyContact';
 import AmplifySignUpConfirm from './AmplifySignUpConfirm';
 import AmplifyResetPassword from './AmplifyResetPassword';
+import useAppContext from 'contexts/app';
 
 // Define the type for the context
 interface AuthContainerContextType {
@@ -18,34 +18,15 @@ interface AuthContainerContextType {
 const AuthContainerContext = createContext<AuthContainerContextType | undefined>(undefined);
 
 // Custom hook to use the context
-export const useAuthContainerContext = () => {
+export const useAuthContainerContext = (): AuthContainerContextType => {
   const context = useContext(AuthContainerContext);
-  if (!context) {
-    throw new Error('useAuthContainerContext must be used within a UserProvider');
-  }
-  return context;
+  return context as AuthContainerContextType;
 };
 
 export const AuthContainerProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [authState, setAuthState] = useState<AuthState>(AuthState.SignIn);
   const [authData, setAuthData] = useState<CognitoUserInterface>();
-
-  const checkUser = async (): Promise<void> => {
-    if (!Auth || typeof Auth.currentAuthenticatedUser !== 'function') {
-      return;
-    }
-
-    return Auth.currentAuthenticatedUser()
-      .then(() => {
-        console.log('user');
-      })
-      .catch(() => {
-        //
-      });
-  };
-  useEffect(() => {
-    checkUser();
-  }, []);
+  const { handleOnAuthUIStateChange } = useAppContext() as any;
 
   const onAuthStateChange = async (nextAuthState: AuthState, data?: CognitoUserInterface) => {
     if (nextAuthState === undefined) return;
@@ -54,6 +35,10 @@ export const AuthContainerProvider: React.FC<{ children: ReactNode }> = ({ child
       setAuthState(AuthState.SignIn);
     } else {
       setAuthState(nextAuthState);
+    }
+
+    if (nextAuthState === AuthState.SignedIn && data) {
+      handleOnAuthUIStateChange(nextAuthState, data);
     }
 
     setAuthData(data);

@@ -1,35 +1,32 @@
 {
-  "env":{
-    "webextensions": true,
-    "es6": true
-  },
-  "parserOptions": {
-    "ecmaVersion": 2020,
-    "ecmaFeatures": {
-      "jsx": true
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint"],
+    "env": {
+        "node": true
     },
-    "sourceType": "module"
-  },
-  "extends": [
-    "eslint:recommended"
-  ],
-  "overrides": [
-    {
-      "files": ["public/**"],
-      "env": {
-        "browser": true
-      }
-    },
-    {
-      "files": ["**/*.ts", "**/*.tsx"],
-      "plugins": [
-        "@typescript-eslint"
-      ],
-      "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
-      "parser": "@typescript-eslint/parser",
-      "parserOptions": {
-        "project": ["./tsconfig.json"]
-      }
+    "extends": [
+        "eslint:recommended",
+        "plugin:prettier/recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "rules": {
+        "@typescript-eslint/brace-style": ["off", "1tbs"],
+        "@typescript-eslint/indent": ["off", 4],
+        "@typescript-eslint/no-parameter-properties": "off",
+        "react/prop-types": "off",
+        "react-hooks/rules-of-hooks": "off",
+        "@typescript-eslint/no-empty-function": "warn",
+        "@typescript-eslint/no-empty-interface": "warn",
+        "@typescript-eslint/no-explicit-any": "off",
+        "no-undef": "off",
+        "prettier/prettier": [
+            "warn",
+            {
+                "useTabs": false,
+                "tabWidth": 4
+            }
+        ]
     }
-  ]
 }

@@ -74,7 +74,7 @@ const CallList = () => {
       <div className="mb-6">
         {items?.map((item) => (
           <CallCard
-            key={item.CallId}
+            key={item.callId}
             data={item}
             selectedItems={collectionProps.selectedItems}
             onSelectionChange={collectionProps.onSelectionChange}
