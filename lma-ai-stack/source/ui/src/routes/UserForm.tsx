@@ -5,10 +5,91 @@ import axios from 'axios';
 import useAppContext from 'contexts/app';
 import { Button } from 'components/ui/button';
 
+const DEPARTMENTS = [
+  {
+    title: 'Customer Support',
+    key: 'Customer.Support',
+  },
+  {
+    title: 'HR/People',
+    key: 'HR.People',
+  },
+  {
+    title: 'Marketing',
+    key: 'Marketing',
+  },
+  {
+    title: 'Product/Engineering',
+    key: 'Product.Engineering',
+  },
+  {
+    title: 'IT',
+    key: 'IT',
+  },
+  {
+    title: 'Operations',
+    key: 'Operations',
+  },
+  {
+    title: 'Research',
+    key: 'Research',
+  },
+  {
+    title: 'Sales',
+    key: 'Sales',
+  },
+  {
+    title: 'Other',
+    key: 'Other',
+  },
+];
+const ROLES = [
+  {
+    title: 'Individual Contributor',
+    key: 'Individual.Contributor',
+  },
+  {
+    title: 'Junior',
+    key: 'Junior',
+  },
+  {
+    title: 'Associate',
+    key: 'Associate',
+  },
+  {
+    title: 'Mid-level',
+    key: 'Mid.level',
+  },
+  {
+    title: 'Senior',
+    key: 'Senior',
+  },
+  {
+    title: 'Lead',
+    key: 'Lead',
+  },
+  {
+    title: 'Manager',
+    key: 'Manager',
+  },
+  {
+    title: 'Director',
+    key: 'Director',
+  },
+  {
+    title: 'Executive',
+    key: 'Executive',
+  },
+  {
+    title: 'Other',
+    key: 'Other',
+  },
+];
+
 export default function UserForm() {
   const { user } = useAppContext();
-  const [selectedDepartment, setSelectedDepartment] = useState<{ [key: string]: boolean }>({});
-  const [selectedRole, setSelectedRole] = useState('');
+  const [selectedDepartment, setSelectedDepartment] = useState<{ [key: string]: boolean }>({ Other: true });
+  const [selectedRole, setSelectedRole] = useState('Other');
   const [showDialog, setShowDialog] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const submitDisable = Object.keys(selectedDepartment).length === 0 || selectedRole === '' || isLoading;
@@ -76,38 +157,17 @@ export default function UserForm() {
           <div className="mb-6">
             <p className="text-lg mb-3">In which department do you work?</p>
             <div className="mt-2 flex flex-wrap gap-2">
-              <OptionBadge
-                isActive={selectedDepartment['Customer Support']}
-                onClick={handleClick}
-                title="Customer Support"
-                updateKey="Customer Support"
-              />
-              <OptionBadge isActive={selectedDepartment['HR/People']} onClick={handleClick} title="HR/People" updateKey="HR/People" />
-              <OptionBadge isActive={selectedDepartment['Marketing']} onClick={handleClick} title="Marketing" updateKey="Marketing" />
-              <OptionBadge
-                isActive={selectedDepartment['Product/Engineering']}
-                onClick={handleClick}
-                title="Product/Engineering"
-                updateKey="Product/Engineering"
-              />
-              <OptionBadge isActive={selectedDepartment['IT']} onClick={handleClick} title="IT" updateKey="IT" />
-              <OptionBadge isActive={selectedDepartment['Operations']} onClick={handleClick} title="Operations" updateKey="Operations" />
-              <OptionBadge isActive={selectedDepartment['Research']} onClick={handleClick} title="Research" updateKey="Research" />
-              <OptionBadge isActive={selectedDepartment['Sales']} onClick={handleClick} title="Sales" updateKey="Sales" />
-              <OptionBadge isActive={selectedDepartment['Other']} onClick={handleClick} title="Other" updateKey="Other" />
+              {DEPARTMENTS.map((e) => (
+                <OptionBadge key={e.key} isActive={selectedDepartment[e.key]} onClick={handleClick} title={e.title} updateKey={e.key} />
+              ))}
             </div>
           </div>
           <div className="mb-10">
             <p className="text-lg mb-3">What is your role?</p>
             <div className="mt-2 flex flex-wrap gap-2">
-              <OptionBadge isActive={selectedRole === 'Senior Leader'} onClick={setSelectedRole} title="Senior Leader" updateKey="Senior Leader" />
-              <OptionBadge isActive={selectedRole === 'Manager'} onClick={setSelectedRole} title="Manager" updateKey="Manager" />
-              <OptionBadge
-                isActive={selectedRole === 'Individual Contributor'}
-                onClick={setSelectedRole}
-                title="Individual Contributor"
-                updateKey="Individual Contributor"
-              />
+              {ROLES.map((role) => (
+                <OptionBadge key={role.key} isActive={selectedRole === role.key} onClick={setSelectedRole} title={role.title} updateKey={role.key} />
+              ))}
             </div>
           </div>
           <div className="flex justify-center">
