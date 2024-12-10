@@ -429,11 +429,11 @@ c=$(echo $files | wc -w)
 counter=0
 for file in $files
   do
-  aws s3api put-object-acl --acl public-read --bucket ${BUCKET} --key $file
+  aws s3api put-object --bucket ${BUCKET} --key $file
   counter=$((counter + 1))
   echo -ne "Progress: $counter/$c files processed\r"
   done
-aws s3api put-object-acl --acl public-read --bucket ${BUCKET} --key ${PREFIX}/${MAIN_TEMPLATE}
+aws s3api put-object --bucket ${BUCKET} --key ${PREFIX}/${MAIN_TEMPLATE}
 echo ""
 echo "Done."
 fi
