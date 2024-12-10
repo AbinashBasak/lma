@@ -506,6 +506,4 @@ Resources:
                           - Effect: Allow
                             Action:
                                 - lex:RecognizeText
-                            Resource: !Sub 'arn:${AWS::Partition}:lex:${AWS::Region}:${AWS::AccountId}:bot-alias/PLCHLDR/PLCHLDR'
-
-arn:aws:lex:us-east-1:553602933418:bot-alias/
+                            Resource: !Sub 'arn:${AWS::Partition}:lex:${AWS::Region}:${AWS::AccountId}:bot-alias/KZGCBURJBM/TUCN3UOON6'
