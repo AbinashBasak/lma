@@ -187,6 +187,7 @@ echo "Computing hash of extension folder contents"
 HASH=$(calculate_hash ".")
 zipfile=src-${HASH}.zip
 BROWSER_EXTENSION_SRC_S3_LOCATION=${BUCKET}/${PREFIX_AND_VERSION}/${dir}/${zipfile}
+echo BROWSER_EXTENSION_SRC_S3_LOCATION
 cd ..
 if haschanged $dir; then
 pushd $dir
