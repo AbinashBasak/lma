@@ -29,6 +29,8 @@ export type CallStartEvent = CallEventBase<'START'> & {
 	AccessToken?: string;
 	IdToken?: string;
 	RefreshToken?: string;
+	meetingTopic?: string;
+	userName?: string;
 };
 
 export type CallEndEvent = CallEventBase<'END'> & {
@@ -92,6 +94,8 @@ export type CallMetaData = {
 	idToken?: string;
 	refreshToken?: string;
 	note?: string;
+	meetingTopic?: string;
+	userName?: string;
 };
 
 export type SocketCallData = {

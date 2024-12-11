@@ -682,6 +682,8 @@ Resources:
             # aws-exports.js Amplify config. The values are embedded in the
             # code at build time. See:
             # https://create-react-app.dev/docs/adding-custom-environment-variables/
+          - Name: GENERATE_SOURCEMAP
+            Value: 'false'
           - Name: REACT_APP_SETTINGS_PARAMETER
             Value: !Ref LMASettingsParameterName
           - Name: REACT_APP_USER_POOL_ID

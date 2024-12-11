@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import useWebSocket, { ReadyState, SendMessage } from 'react-use-websocket';
 import { useSettings } from './SettingsContext';
-import { useUserContext } from './UserContext';
+import { User, useUserContext } from './UserContext';
 
 type Call = {
     callEvent: string;
@@ -27,7 +27,7 @@ const initialIntegration = {
     fetchMetadata: () => {
         console.log('fetchMetadata');
     },
-    startTranscription: (user: any, userName: string, meetingTopic: string) => {
+    startTranscription: (user: User, userName: string, meetingTopic: string) => {
         console.log(user, userName, meetingTopic);
     },
     stopTranscription: () => {
@@ -171,22 +171,8 @@ function IntegrationProvider({ children }: any) {
         return {};
     }, [settings]);
 
-    const getTimestampStr = () => {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0'); // JavaScript months start at 0
-        const day = String(now.getDate()).padStart(2, '0');
-        const hour = String(now.getHours()).padStart(2, '0');
-        const minute = String(now.getMinutes()).padStart(2, '0');
-        const second = String(now.getSeconds()).padStart(2, '0');
-        const millisecond = String(now.getMilliseconds()).padStart(3, '0');
-        const formattedDate = `${year}-${month}-${day}-${hour}:${minute}:${second}.${millisecond}`;
-        return formattedDate;
-    };
-
     const startTranscription = useCallback(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        async (user: any, userName: string, meetingTopic: string) => {
+        async (user: User, userName: string, meetingTopic: string) => {
             if (await checkTokenExpired()) {
                 // TODO login popup
                 return;
@@ -196,11 +182,13 @@ function IntegrationProvider({ children }: any) {
             const callMetadata = {
                 callEvent: 'START',
                 agentId: userName,
-                fromNumber: '+9165551234',
-                toNumber: '+8001112222',
-                callId: `${meetingTopic} - ${getTimestampStr()}`,
+                fromNumber: '+91xxxxxxxx',
+                toNumber: '+80xxxxxxxx',
+                callId: `${meetingTopic}-${Date.now()}-${parseInt((Math.random() * 100).toString())}`,
                 samplingRate: 8000,
                 activeSpeaker: 'n/a',
+                meetingTopic,
+                userName,
             };
 
             setCurrentCall(callMetadata);
@@ -268,12 +256,9 @@ function IntegrationProvider({ children }: any) {
                 } else if (request.action === 'AudioData') {
                     if (readyState === ReadyState.OPEN) {
                         const audioData = await dataUrlToBytes(request.audio, muted, paused);
-
                         sendMessage(audioData);
                     }
                 } else if (request.action === 'ActiveSpeakerChange') {
-                    console.log('request', request);
-
                     currentCall.callEvent = 'SPEAKER_CHANGE';
                     currentCall.activeSpeaker = request.active_speaker;
                     setActiveSpeaker(request.active_speaker);

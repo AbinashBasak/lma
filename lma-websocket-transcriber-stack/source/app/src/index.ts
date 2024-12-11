@@ -37,7 +37,6 @@ const RECORDING_FILE_PREFIX = process.env['RECORDING_FILE_PREFIX'] || 'lma-audio
 const CPU_HEALTH_THRESHOLD = parseInt(process.env['CPU_HEALTH_THRESHOLD'] || '50', 10);
 const LOCAL_TEMP_DIR = process.env['LOCAL_TEMP_DIR'] || '/tmp/';
 const WS_LOG_LEVEL = process.env['WS_LOG_LEVEL'] || 'debug';
-const WS_LOG_INTERVAL = parseInt(process.env['WS_LOG_INTERVAL'] || '120', 10);
 const SHOULD_RECORD_CALL = (process.env['SHOULD_RECORD_CALL'] || '') === 'true';
 const REGION = process.env['REGION'] || 'us-east-1';
 const dynamoClient = new DynamoDBClient({ region: REGION });
@@ -65,13 +64,6 @@ server.register(websocket);
 // Setup preHandler hook to authenticate
 server.addHook('preHandler', async (request, reply) => {
 	if (!request.url.includes('health')) {
-		// const clientIP = getClientIP(request.headers);
-		// server.log.debug(
-		// 	`[AUTH]: [${clientIP}] - Received preHandler hook for authentication. URI: <${
-		// 		request.url
-		// 	}>, Headers: ${JSON.stringify(request.headers)}`
-		// );
-
 		await jwtVerifier(request, reply);
 	}
 });
@@ -79,11 +71,6 @@ server.addHook('preHandler', async (request, reply) => {
 // Setup Route for websocket connection
 server.get('/api/v1/ws', { websocket: true, logLevel: 'debug' }, (connection, request) => {
 	const clientIP = getClientIP(request.headers);
-	// server.log.debug(
-	// 	`[NEW CONNECTION]: [${clientIP}] - Received new connection request @ /api/v1/ws. URI: <${
-	// 		request.url
-	// 	}>, Headers: ${JSON.stringify(request.headers)}`
-	// );
 
 	registerHandlers(clientIP, connection.socket, request); // setup the handler functions for websocket events
 });
@@ -106,13 +93,6 @@ server.get('/health/check', { logLevel: 'warn' }, (request, response) => {
 	const remoteIp = request.socket.remoteAddress || 'unknown';
 	const item = healthCheckStats.get(remoteIp);
 	if (!item) {
-		server.log.debug(
-			`[HEALTH CHECK]: [${remoteIp}] - Received First health check from load balancer. URI: <${
-				request.url
-			}>, Headers: ${JSON.stringify(
-				request.headers
-			)} ==> Health Check status - CPU Usage%: ${cpuUsage}, IsHealthy: ${isHealthy}, Status: ${status}`
-		);
 		healthCheckStats.set(remoteIp, {
 			addr: remoteIp,
 			tsFirst: now,
@@ -122,16 +102,6 @@ server.get('/health/check', { logLevel: 'warn' }, (request, response) => {
 	} else {
 		item.tsLast = now;
 		++item.count;
-		const elapsed_seconds = Math.round((item.tsLast - item.tsFirst) / 1000);
-		if (elapsed_seconds % WS_LOG_INTERVAL == 0) {
-			server.log.debug(
-				`[HEALTH CHECK]: [${remoteIp}] - Received Health check # ${item.count} from load balancer. URI: <${
-					request.url
-				}>, Headers: ${JSON.stringify(
-					request.headers
-				)} ==> Health Check status - CPU Usage%: ${cpuUsage}, IsHealthy: ${isHealthy}, Status: ${status}`
-			);
-		}
 	}
 
 	response
@@ -213,12 +183,6 @@ const onTextMessage = async (clientIP: string, ws: WebSocket, data: string, requ
 	const match = auth?.match(/^Bearer (.+)$/);
 	const callMetaData: CallMetaData = JSON.parse(data);
 	if (!match) {
-		// server.log.error(
-		// 	`[AUTH]: [${clientIP}] - No Bearer token found in header or query string. URI: <${
-		// 		request.url
-		// 	}>, Headers: ${JSON.stringify(request.headers)}`
-		// );
-
 		return;
 	}
 
@@ -227,11 +191,6 @@ const onTextMessage = async (clientIP: string, ws: WebSocket, data: string, requ
 	try {
 		server.log.debug(`[ON TEXT MESSAGE]: [${clientIP}][${callMetaData.callId}] - Call Metadata received from client`);
 	} catch (error) {
-		// server.log.error(
-		// 	`[ON TEXT MESSAGE]: [${clientIP}][${
-		// 		callMetaData.callId
-		// 	}] - Error parsing call metadata: ${data} ${normalizeErrorForLogging(error)}`
-		// );
 		callMetaData.callId = randomUUID();
 	}
 
@@ -247,11 +206,7 @@ const onTextMessage = async (clientIP: string, ws: WebSocket, data: string, requ
 		callMetaData.activeSpeaker = callMetaData.activeSpeaker ?? callMetaData?.fromNumber ?? 'unknown';
 
 		// if (typeof callMetaData.shouldRecordCall === 'undefined' || callMetaData.shouldRecordCall === null) {
-		//     server.log.debug(`[${callMetaData.callEvent}]: [${callMetaData.callId}] - Client did not provide ShouldRecordCall in CallMetaData. Defaulting to  CFN parameter EnableAudioRecording =  ${SHOULD_RECORD_CALL}`);
-
 		//     callMetaData.shouldRecordCall = SHOULD_RECORD_CALL;
-		// } else {
-		//     server.log.debug(`[${callMetaData.callEvent}]: [${callMetaData.callId}] - Using client provided ShouldRecordCall parameter in CallMetaData =  ${callMetaData.shouldRecordCall}`);
 		// }
 
 		callMetaData.agentId = callMetaData.agentId || randomUUID();
@@ -277,9 +232,6 @@ const onTextMessage = async (clientIP: string, ws: WebSocket, data: string, requ
 		startTranscribe(socketCallMap, server);
 	} else if (callMetaData.callEvent === 'SPEAKER_CHANGE') {
 		const socketData = socketMap.get(ws);
-		server.log.debug(
-			`[${callMetaData.callEvent}]: [${callMetaData.callId}] - Received speaker change. Active speaker = ${callMetaData.activeSpeaker}`
-		);
 
 		if (socketData && socketData.callMetadata) {
 			// We already know speaker name for the microphone channel (ch_1) - represented in callMetaData.agentId.
@@ -288,48 +240,18 @@ const onTextMessage = async (clientIP: string, ws: WebSocket, data: string, requ
 			const mic_channel_speaker = callMetaData.agentId;
 			const activeSpeaker = callMetaData.activeSpeaker;
 			if (activeSpeaker !== mic_channel_speaker) {
-				server.log.debug(
-					`[${callMetaData.callEvent}]: [${callMetaData.callId}] - active speaker '${activeSpeaker}' assigned to meeting channel (ch_0) as name does not match mic channel (ch_1) speaker '${mic_channel_speaker}'`
-				);
 				// set active speaker in the socketData structure being used by startTranscribe results loop.
 				socketData.callMetadata.activeSpeaker = callMetaData.activeSpeaker;
-			} else {
-				server.log.debug(
-					`[${callMetaData.callEvent}]: [${callMetaData.callId}] - active speaker '${activeSpeaker}' not assigned to meeting channel (ch_0) as name matches mic channel (ch_1) speaker '${mic_channel_speaker}'`
-				);
 			}
-		} else {
-			// this is not a valid call metadata
-			server.log.error(
-				`[${callMetaData.callEvent}]: [${callMetaData.callId}] - Invalid call metadata: ${JSON.stringify(callMetaData)}`
-			);
 		}
 	} else if (callMetaData.callEvent === 'END') {
 		const socketData = socketMap.get(ws);
 		if (!socketData || !socketData.callMetadata) {
-			server.log.error(
-				`[${callMetaData.callEvent}]: [${callMetaData.callId}] - Received END without starting a call:  ${JSON.stringify(
-					callMetaData
-				)}`
-			);
 			return;
 		}
-		server.log.debug(
-			`[${callMetaData.callEvent}]: [${
-				callMetaData.callId
-			}] - Received call end event from client, writing it to KDS:  ${JSON.stringify(callMetaData)}`
-		);
 
 		if (typeof callMetaData.shouldRecordCall === 'undefined' || callMetaData.shouldRecordCall === null) {
-			server.log.debug(
-				`[${callMetaData.callEvent}]: [${callMetaData.callId}] - Client did not provide ShouldRecordCall in CallMetaData. Defaulting to  CFN parameter EnableAudioRecording =  ${SHOULD_RECORD_CALL}`
-			);
-
 			callMetaData.shouldRecordCall = SHOULD_RECORD_CALL;
-		} else {
-			server.log.debug(
-				`[${callMetaData.callEvent}]: [${callMetaData.callId}] - Using client provided ShouldRecordCall parameter in CallMetaData =  ${callMetaData.shouldRecordCall}`
-			);
 		}
 		await endCall(ws, socketData, callMetaData);
 	} else if (callMetaData.callEvent === 'NOTE') {
@@ -391,11 +313,6 @@ const onWsClose = async (ws: WebSocket, code: number): Promise<void> => {
 	ws.close(code);
 	const socketData = socketMap.get(ws);
 	if (socketData) {
-		server.log.debug(
-			`[ON WSCLOSE]: [${
-				socketData.callMetadata.callId
-			}] - Writing call end event due to websocket close event ${JSON.stringify(socketData.callMetadata)}`
-		);
 		await endCall(ws, socketData);
 	}
 };
@@ -414,11 +331,6 @@ const endCall = async (ws: WebSocket, socketData: SocketCallData, callMetaData?:
 				socketData.writeRecordingStream.end();
 
 				if (callMetaData.shouldRecordCall) {
-					server.log.debug(
-						`[${callMetaData.callEvent}]: [${
-							callMetaData.callId
-						}] - Audio Recording enabled. Writing to S3.: ${JSON.stringify(callMetaData)}`
-					);
 					const header = createWavHeader(callMetaData.samplingRate, socketData.recordingFileSize);
 					const tempRecordingFilename = getTempRecordingFileName(callMetaData);
 					const wavRecordingFilename = getWavRecordingFileName(callMetaData);
@@ -442,44 +354,16 @@ const endCall = async (ws: WebSocket, socketData: SocketCallData, callMetaData?:
 					const recordingUrl = url.href;
 
 					await writeCallRecordingEvent(callMetaData, recordingUrl, server);
-				} else {
-					server.log.debug(
-						`[${callMetaData.callEvent}]: [${
-							callMetaData.callId
-						}] - Audio Recording disabled. Add s3 url event is not written to KDS. : ${JSON.stringify(callMetaData)}`
-					);
 				}
 			}
 
 			if (socketData.audioInputStream) {
-				server.log.debug(
-					`[${callMetaData.callEvent}]: [${callMetaData.callId}] - Closing audio input stream:  ${JSON.stringify(
-						callMetaData
-					)}`
-				);
 				socketData.audioInputStream.end();
 				socketData.audioInputStream.destroy();
 			}
 			if (socketData) {
-				server.log.debug(
-					`[${callMetaData.callEvent}]: [${callMetaData.callId}] - Deleting websocket from map: ${JSON.stringify(
-						callMetaData
-					)}`
-				);
 				socketMap.delete(ws);
 			}
-		} else {
-			server.log.error('[END]: Missing Call Meta Data in END event');
-		}
-	} else {
-		if (callMetaData !== undefined && callMetaData != null) {
-			server.log.error(
-				`[${callMetaData.callEvent}]: [${
-					callMetaData.callId
-				}] - Duplicate End call event. Already received the end call event: ${JSON.stringify(callMetaData)}`
-			);
-		} else {
-			server.log.error('[END]: Duplicate End call event. Missing Call Meta Data in END event');
 		}
 	}
 };
@@ -496,11 +380,6 @@ const writeToS3 = async (callMetaData: CallMetaData, tempFileName: string) => {
 	};
 	try {
 		data = await s3Client.send(new PutObjectCommand(uploadParams));
-		server.log.debug(
-			`[${callMetaData.callEvent}]: [${callMetaData.callId}] - Uploaded ${sourceFile} to S3 complete: ${JSON.stringify(
-				data
-			)}`
-		);
 	} catch (err) {
 		server.log.error(
 			`[${callMetaData.callEvent}]: [${
@@ -524,7 +403,6 @@ const getWavRecordingFileName = (callMetaData: CallMetaData): string => {
 const deleteTempFile = async (callMetaData: CallMetaData, sourceFile: string) => {
 	try {
 		await fs.promises.unlink(sourceFile);
-		server.log.debug(`[${callMetaData.callEvent}]: [${callMetaData.callId}] - Deleted tmp file ${sourceFile}`);
 	} catch (err) {
 		server.log.error(
 			`[${callMetaData.callEvent}]: [${
@@ -542,7 +420,6 @@ server.listen(
 	},
 	(err) => {
 		if (err) {
-			server.log.error(`[WS SERVER STARTUP]: Error starting websocket server: ${normalizeErrorForLogging(err)}`);
 			process.exit(1);
 		}
 		server.log.debug('[WS SERVER STARTUP]: Websocket server is ready and listening.');

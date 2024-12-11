@@ -73,16 +73,16 @@ export default function AudioPlayer({ url, title }: IAudioPlayer) {
           max={duration}
           step={1}
           onValueChange={([value]) => handleSeek(value)}
-          className="w-full bg-gray-700 rounded-full h-2 mb-4"
+          className="w-full bg-gray-100 rounded-full h-2 mb-4"
         />
 
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between">
           <div className="flex items-center space-x-2">
             <Button variant="ghost" onClick={togglePlayPause}>
               {isPlaying ? <PauseIcon className="h-8 w-8" /> : <PlayIcon className="h-8 w-8" />}
             </Button>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1">
             <VolumeIcon className="h-6 w-6 text-gray-400" />
             <Slider value={[volume]} max={100} step={1} onValueChange={([value]) => handleVolumeChange(value)} className="w-24" />
           </div>

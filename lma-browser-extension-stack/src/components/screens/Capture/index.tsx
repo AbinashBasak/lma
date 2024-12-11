@@ -18,7 +18,7 @@ function Capture() {
         <div className="h-full">
             <div className="h-[80vh] min-h-[365px] flex flex-col">
                 <div className="bg-slate-800 px-4 py-4">
-                    <h1 className="text-base font-semibold text-gray-3">Amazon Live Meeting Assistant</h1>
+                    <h1 className="text-base font-semibold text-gray-3">Leali Live Meeting Assistant</h1>
                     <button onClick={logout}>logout</button>
                 </div>
                 <div className="bg-slate-900 flex-1">

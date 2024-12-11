@@ -15,7 +15,7 @@ const MeetingRecording = ({ item }: IMeetingRecording) => {
   }
 
   return (
-    <Collapsible className="w-full border border-slate-200 p-3 bg-white rounded-lg cursor-pointer">
+    <Collapsible defaultOpen className="w-full border border-slate-200 p-3 bg-white rounded-lg cursor-pointer">
       <CollapsibleTrigger asChild>
         <div className="flex flex-row gap-2 items-center select-none">
           <div className="h-6 w-6 rounded-md bg-slate-100 flex justify-center items-center">

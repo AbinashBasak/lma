@@ -2,7 +2,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { AuthSession, fetchAuthSession, FetchAuthSessionOptions, signOut } from 'aws-amplify/auth';
 
-interface User {
+export interface User {
     id_token?: string;
     access_token?: string;
 }

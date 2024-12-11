@@ -68,14 +68,24 @@ const CallPanel = ({ item, callTranscriptPerCallId, getCallDetailsFromCallIds }:
       <div className="grid grid-cols-12 gap-4">
         <div className="flex flex-col gap-2 col-span-12 lg:col-span-2 lg:sticky lg:top-[122px] lg:h-screen lg:max-h-[calc(100vh_-_130px)] lg:overflow-x-clip">
           <MeetingRecording item={item} />
-          <MeetingNote callId={item.callId} />
         </div>
         <div className="col-span-12 lg:col-span-6">
-          <NewCallSummary data={item} />
+          <Tabs defaultValue="summary">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="summary">Summary</TabsTrigger>
+              <TabsTrigger value="note">Note</TabsTrigger>
+            </TabsList>
+            <TabsContent value="summary" forceMount className="hidden data-[state=active]:block">
+              <NewCallSummary data={item} />
+            </TabsContent>
+            <TabsContent value="note" forceMount className="hidden data-[state=active]:block">
+              <MeetingNote callId={item.callId} />
+            </TabsContent>
+          </Tabs>
         </div>
         <div className="flex flex-col gap-2 col-span-12 lg:col-span-4 lg:sticky lg:top-[122px] lg:h-screen lg:max-h-[calc(100vh_-_130px)] lg:overflow-y-auto">
           <div className="border p-2 rounded-lg">
-            <Tabs defaultValue="assistBot" className="">
+            <Tabs defaultValue="assistBot">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="transcript">Transcript</TabsTrigger>
                 <TabsTrigger value="assistBot">Assist Bot</TabsTrigger>

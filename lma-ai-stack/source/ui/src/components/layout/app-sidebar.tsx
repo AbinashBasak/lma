@@ -1,14 +1,15 @@
 'use client';
 
 import * as React from 'react';
-import { AudioWaveform, Command, GalleryVerticalEnd, Settings2, SquareTerminal } from 'lucide-react';
+import { AudioWaveform, Command, GalleryVerticalEnd, LinkIcon, SquareTerminal } from 'lucide-react';
 
 import { NavMain } from './nav-main';
 import { NavUser } from './nav-user';
 import { TeamSwitcher } from './team-switcher';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from 'components/ui/sidebar';
-import MeetingLimitButton from './MeetingLimitButton';
+// import MeetingLimitButton from './MeetingLimitButton';
 import useAppContext from 'contexts/app';
+import { LMA_VERSION } from 'components/common/constants';
 
 // This is sample data.
 const data = {
@@ -41,28 +42,34 @@ const data = {
       icon: SquareTerminal,
     },
     {
-      title: 'Settings',
-      url: '#',
-      icon: Settings2,
-      items: [
-        {
-          title: 'General',
-          url: '#',
-        },
-        {
-          title: 'Team',
-          url: '#',
-        },
-        {
-          title: 'Billing',
-          url: '#',
-        },
-        {
-          title: 'Limits',
-          url: '#',
-        },
-      ],
+      title: 'Download extension',
+      url: `/lma-chrome-extension-${LMA_VERSION}.zip`,
+      icon: LinkIcon,
+      external: true,
     },
+    // {
+    //   title: 'Settings',
+    //   url: '#',
+    //   icon: Settings2,
+    //   items: [
+    //     {
+    //       title: 'General',
+    //       url: '#',
+    //     },
+    //     {
+    //       title: 'Team',
+    //       url: '#',
+    //     },
+    //     {
+    //       title: 'Billing',
+    //       url: '#',
+    //     },
+    //     {
+    //       title: 'Limits',
+    //       url: '#',
+    //     },
+    //   ],
+    // },
   ],
 };
 
@@ -70,8 +77,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useAppContext() as any;
   const userId = user?.attributes?.email || 'user';
   const userName = user?.username || 'User Name';
-
-  console.log(user);
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -82,7 +87,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <MeetingLimitButton />
+        {/* <MeetingLimitButton /> */}
         <NavUser
           user={{
             name: userName,

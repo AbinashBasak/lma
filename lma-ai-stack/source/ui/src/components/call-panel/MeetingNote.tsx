@@ -63,27 +63,17 @@ const MeetingNote = ({ callId }: IMeetingNote) => {
   };
 
   return (
-    <Collapsible className="w-full border border-slate-200 p-3 bg-white rounded-lg cursor-pointer">
-      <CollapsibleTrigger asChild>
-        <div className="flex flex-row gap-2 items-center select-none">
-          <div className="h-6 w-6 rounded-md bg-slate-100 flex justify-center items-center">
-            <NotebookIcon size={14} className="text-slate-600" />
-          </div>
-          <p className="text-sm text-slate-600 leading-none">Note</p>
-        </div>
-      </CollapsibleTrigger>
-      <CollapsibleContent forceMount className="data-[state=closed]:hidden">
-        <div className="border-t mt-3 pt-2">
-          <textarea
-            value={note}
-            onChange={handleNoteChange}
-            className="w-full resize-none border-none ring-0 focus-visible:outline-none text-black text-sm"
-            rows={8}
-            disabled={readyState !== ReadyState.OPEN}
-          />
-        </div>
-      </CollapsibleContent>
-    </Collapsible>
+    <div className="w-full border border-slate-200 p-3 bg-white rounded-lg cursor-pointer">
+      <div>
+        <textarea
+          value={note}
+          onChange={handleNoteChange}
+          className="w-full resize-none border-none ring-0 focus-visible:outline-none text-black text-sm"
+          rows={8}
+          disabled={readyState !== ReadyState.OPEN}
+        />
+      </div>
+    </div>
   );
 };
 
