@@ -20,6 +20,8 @@ export default gql`
       RecordingUrl
       PcaUrl
       TotalConversationDurationMillis
+      UserName
+      MeetingTopic
       Sentiment {
         OverallSentiment {
           AGENT

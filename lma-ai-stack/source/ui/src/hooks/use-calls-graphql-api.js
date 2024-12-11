@@ -237,6 +237,7 @@ const useCallsGraphQlApi = ({ initialPeriodsToLoad = CALL_LIST_SHARDS_PER_DAY * 
         logger.debug('onAddTranscriptSegment null contact unsubscribing');
         subscription.unsubscribe();
       }
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       return () => {};
     }
     logger.debug('setting up onAddTranscriptSegment subscription');
@@ -310,7 +311,7 @@ const useCallsGraphQlApi = ({ initialPeriodsToLoad = CALL_LIST_SHARDS_PER_DAY * 
     return callData;
   };
 
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const listCallIds = async () => {
     // this uses a Scan of dynamoDB - prefer using the shard based queries
     const listCallsPromise = API.graphql({ query: listCalls });

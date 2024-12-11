@@ -53,6 +53,8 @@ type Call implements DynamoDbBase @aws_cognito_user_pools @aws_iam {
   CallSummaryText: String
   Owner: String
   SharedWith: String
+  UserName: String
+  MeetingTopic: String
 }
 
 type CallList @aws_cognito_user_pools @aws_iam {
