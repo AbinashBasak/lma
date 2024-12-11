@@ -97,6 +97,8 @@ input CreateCallInput {
   ExpiresAfter: AWSTimestamp
   Owner: String
   SharedWith: String
+  MeetingTopic: String
+  UserName: String
 }
 
 type CreateCallOutput @aws_iam {
