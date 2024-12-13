@@ -228,7 +228,7 @@ const useCallsGraphQlApi = ({ initialPeriodsToLoad = CALL_LIST_SHARDS_PER_DAY * 
   };
 
   useEffect(() => {
-    let subscription;
+    let subscription = null;
     logger.debug('onAddTranscriptSegment effect');
 
     if (!liveTranscriptCallId) {

@@ -2,57 +2,68 @@ import { useCallback, useEffect, useState } from 'react';
 import { generateClient, GraphQLSubscription } from 'aws-amplify/api';
 import { ITranscript, ITranscriptSegment, subscriptionQuery } from './schema';
 import { cloneDeep } from 'lodash';
+import { eventBus$, EventPayload } from 'lib/eventBus';
 
-// function generateDummyTranscriptSegments(length: number) {
-// 	const getRandomString = (prefix: string, length = 6) =>
-// 		prefix +
-// 		Math.random()
-// 			.toString(36)
-// 			.substring(2, 2 + length);
+function generateDummyTranscriptSegments(length: number) {
+    const getRandomString = (prefix: string, length = 6) =>
+        prefix +
+        Math.random()
+            .toString(36)
+            .substring(2, 2 + length);
 
-// 	const getRandomSentimentScore = () => ({
-// 		Positive: Math.random(),
-// 		Negative: Math.random(),
-// 		Neutral: Math.random(),
-// 		Mixed: Math.random(),
-// 	});
+    const getRandomSentimentScore = () => ({
+        Positive: Math.random(),
+        Negative: Math.random(),
+        Neutral: Math.random(),
+        Mixed: Math.random(),
+    });
 
-// 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// 	const generateWeightedScore = (scores: any) =>
-// 		scores.Positive * 0.5 + scores.Negative * -0.5 + scores.Neutral * 0.2 + scores.Mixed * 0.1;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const generateWeightedScore = (scores: any) => scores.Positive * 0.5 + scores.Negative * -0.5 + scores.Neutral * 0.2 + scores.Mixed * 0.1;
 
-// 	const dummyData: ITranscriptSegment[] = [];
+    const dummyData: ITranscriptSegment[] = [];
 
-// 	for (let i = 0; i < length; i++) {
-// 		const sentimentScores = getRandomSentimentScore();
-// 		const sentimentWeighted = generateWeightedScore(sentimentScores);
-// 		dummyData.push({
-// 			PK: getRandomString('PK_'),
-// 			SK: getRandomString('SK_'),
-// 			CreatedAt: new Date().toISOString(),
-// 			CallId: getRandomString('Call_'),
-// 			SegmentId: getRandomString('Seg_'),
-// 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// 			StartTime: (Math.random() * 6000) as any,
-// 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// 			EndTime: (Math.random() * 6000) as any,
-// 			Speaker: `Speaker_${Math.floor(Math.random() * 10) + 1}`,
-// 			Transcript: `This is a sample transcript for segment ${i + 1}`,
-// 			IsPartial: Math.random() < 0.5,
-// 			Channel: 'AGENT',
-// 			Owner: Math.random() < 0.5 ? getRandomString('Owner_') : undefined,
-// 			SharedWith: Math.random() < 0.5 ? [`User_${Math.floor(Math.random() * 10) + 1}`] : [],
-// 			Sentiment: ['Positive', 'Negative', 'Neutral', 'Mixed'][Math.floor(Math.random() * 4)],
-// 			SentimentScore: sentimentScores,
-// 			SentimentWeighted: sentimentWeighted,
-// 		});
-// 	}
+    for (let i = 0; i < length; i++) {
+        const sentimentScores = getRandomSentimentScore();
+        const sentimentWeighted = generateWeightedScore(sentimentScores);
+        dummyData.push({
+            PK: getRandomString('PK_'),
+            SK: getRandomString('SK_'),
+            CreatedAt: new Date().toISOString(),
+            CallId: getRandomString('Call_'),
+            SegmentId: getRandomString('Seg_'),
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            StartTime: (Math.random() * 6000) as any,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            EndTime: (Math.random() * 6000) as any,
+            Speaker: `Speaker_${Math.floor(Math.random() * 10) + 1}`,
+            Transcript: `This is a sample transcript for segment ${i + 1}`,
+            IsPartial: Math.random() < 0.5,
+            Channel: 'AGENT',
+            Owner: Math.random() < 0.5 ? getRandomString('Owner_') : undefined,
+            SharedWith: Math.random() < 0.5 ? [`User_${Math.floor(Math.random() * 10) + 1}`] : [],
+            Sentiment: ['Positive', 'Negative', 'Neutral', 'Mixed'][Math.floor(Math.random() * 4)],
+            SentimentScore: sentimentScores,
+            SentimentWeighted: sentimentWeighted,
+        });
+    }
 
-// 	return dummyData;
-// }
+    return dummyData;
+}
 
 export const useLiveTranscript = (callId?: string) => {
-    const [list, setList] = useState<ITranscriptSegment[]>([]);
+    const [list, setList] = useState<ITranscriptSegment[]>(generateDummyTranscriptSegments(40));
+
+    useEffect(() => {
+        const subscription = eventBus$.subscribe((event: EventPayload) => {
+            if (event.eventType === 'clear') {
+                setList([]);
+            }
+        });
+
+        // Cleanup subscription on unmount
+        return () => subscription.unsubscribe();
+    }, []);
 
     const handleCallTranscriptSegmentMessage = useCallback(
         (transcriptSegment: ITranscriptSegment) => {

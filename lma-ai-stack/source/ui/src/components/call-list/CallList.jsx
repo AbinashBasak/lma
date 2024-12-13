@@ -78,6 +78,7 @@ const CallList = () => {
             data={item}
             selectedItems={collectionProps.selectedItems}
             onSelectionChange={collectionProps.onSelectionChange}
+            setIsCallsListLoading={setIsCallsListLoading}
           />
         ))}
       </div>

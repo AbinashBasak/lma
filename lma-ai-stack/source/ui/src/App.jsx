@@ -11,6 +11,7 @@ import Routes from './routes/Routes';
 
 import './App.css';
 import { Toaster } from 'components/ui/toaster';
+import { TooltipProvider } from 'components/ui/tooltip';
 
 const App = () => {
   const awsConfig = useAwsConfig();
@@ -37,9 +38,11 @@ const App = () => {
   return (
     <div className="App">
       <AppContext.Provider value={appContextValue}>
-        <HashRouter>
-          <Routes />
-        </HashRouter>
+        <TooltipProvider>
+          <HashRouter>
+            <Routes />
+          </HashRouter>
+        </TooltipProvider>
         <Toaster />
       </AppContext.Provider>
     </div>

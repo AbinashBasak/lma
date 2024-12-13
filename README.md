@@ -26,25 +26,25 @@ Everything you need is provided as open source in this [GitHub repo](https://git
 
 The following are some of the things LMA can do:
 
-- **Live transcription with speaker attribution** - LMA is powered by Amazon Transcribe ASR models for low-latency, high-accuracy speech to text. You can teach it brand names and domain-specific terminology if needed, using custom vocabulary and custom language model features in Amazon Transcribe.
-   <p align="left"><img src="./images/readme-transcription.png" alt="Transcription" /></p>
-- **Live translation** - It uses Amazon Translate to optionally show each segment of the conversation translated into your language of choice, from a selection of 75 languages.
-  <p align="left"><img src="./images/readme-translation.png" alt="Translation" width=400/></p>
-- **Context aware meeting assistant** - It uses your choice of Amazon Q Business or Knowledge Bases for Amazon Bedrock to provide answers from your trusted sources, or a Bedrock LLM if you don't have or need a knowledge base, using the live transcript as context for fact-checking and follow-up questions. To activate the assistant, just say “_Okay, Assistant_,” choose the **ASK ASSISTANT!** button, or enter your own question in the UI.
-  <p align="left"><img src="./images/readme-OK-Assistant.png" alt="OK Q" width=400/></p>
-- **On demand summaries of the meeting** - With the click of a button on the UI, you can generate a summary, which is useful when someone joins late and needs to get caught up. The summaries are generated from the transcript by Amazon Bedrock. LMA also provides options for identifying the current meeting topic, and for generating a list of action items with owners and due dates. You can also create your own custom prompts and corresponding options.
-  <p align="left"><img src="./images/readme-action-items.png" alt="Action Items" /></p>
-- **Automated summary and insights** - When the meeting has ended, LMA automatically runs a set of large language model (LLM) prompts on Amazon Bedrock to summarize the meeting transcript and extract insights. You can customize these prompts as well.
-  <p align="left"><img src="./images/readme-post-meeting-summaries.png" alt="Post Meeting Summaries" /></p>
-- **Meeting Recording** - The audio is (optionally) stored for you, so you can replay important sections on the meeting later.
-  <p align="left"><img src="./images/readme-recording.png" alt="recording" /></p>
-- **Inventory list of meetings** - LMA keeps track of all your meetings in a searchable list.
-  <p align="left"><img src="./images/readme-meeting-list.png" alt="Transcription" /></p>
-- **Gen AI queries across all your meetings** - LMA stores all your meeting transcripts and summaries in a separate Bedrock Knowledge base, and provides a chat interface where you can search for answers and references across all your meetings.
-    <p align="left"><img style="border:2px solid #000000" src="./images/readme-meetings-query-tool.png" alt="readme-meetings-query-tool.png" width="500"/></p>
+-   **Live transcription with speaker attribution** - LMA is powered by Amazon Transcribe ASR models for low-latency, high-accuracy speech to text. You can teach it brand names and domain-specific terminology if needed, using custom vocabulary and custom language model features in Amazon Transcribe.
+     <p align="left"><img src="./images/readme-transcription.png" alt="Transcription" /></p>
+-   **Live translation** - It uses Amazon Translate to optionally show each segment of the conversation translated into your language of choice, from a selection of 75 languages.
+    <p align="left"><img src="./images/readme-translation.png" alt="Translation" width=400/></p>
+-   **Context aware meeting assistant** - It uses your choice of Amazon Q Business or Knowledge Bases for Amazon Bedrock to provide answers from your trusted sources, or a Bedrock LLM if you don't have or need a knowledge base, using the live transcript as context for fact-checking and follow-up questions. To activate the assistant, just say “_Okay, Assistant_,” choose the **ASK ASSISTANT!** button, or enter your own question in the UI.
+    <p align="left"><img src="./images/readme-OK-Assistant.png" alt="OK Q" width=400/></p>
+-   **On demand summaries of the meeting** - With the click of a button on the UI, you can generate a summary, which is useful when someone joins late and needs to get caught up. The summaries are generated from the transcript by Amazon Bedrock. LMA also provides options for identifying the current meeting topic, and for generating a list of action items with owners and due dates. You can also create your own custom prompts and corresponding options.
+    <p align="left"><img src="./images/readme-action-items.png" alt="Action Items" /></p>
+-   **Automated summary and insights** - When the meeting has ended, LMA automatically runs a set of large language model (LLM) prompts on Amazon Bedrock to summarize the meeting transcript and extract insights. You can customize these prompts as well.
+    <p align="left"><img src="./images/readme-post-meeting-summaries.png" alt="Post Meeting Summaries" /></p>
+-   **Meeting Recording** - The audio is (optionally) stored for you, so you can replay important sections on the meeting later.
+    <p align="left"><img src="./images/readme-recording.png" alt="recording" /></p>
+-   **Inventory list of meetings** - LMA keeps track of all your meetings in a searchable list.
+    <p align="left"><img src="./images/readme-meeting-list.png" alt="Transcription" /></p>
+-   **Gen AI queries across all your meetings** - LMA stores all your meeting transcripts and summaries in a separate Bedrock Knowledge base, and provides a chat interface where you can search for answers and references across all your meetings.
+      <p align="left"><img style="border:2px solid #000000" src="./images/readme-meetings-query-tool.png" alt="readme-meetings-query-tool.png" width="500"/></p>
 
-- **Browser extension captures audio and meeting metadata from popular meeting apps** - The browser extension captures meeting metadata — the meeting title and names of active speakers — and audio from you (your microphone) and others (from the meeting browser tab). As of this writing, LMA supports Chrome for the browser extension, and Zoom, Teams, WebEx, and Chime for meeting apps (with others coming soon). _Standalone meeting apps don’t work with LMA — instead, launch your meetings in the browser._
-  <p align="left"><img src="./images/readme-browser-extension.png" alt="Browser Extension" width=200/></p>
+-   **Browser extension captures audio and meeting metadata from popular meeting apps** - The browser extension captures meeting metadata — the meeting title and names of active speakers — and audio from you (your microphone) and others (from the meeting browser tab). As of this writing, LMA supports Chrome for the browser extension, and Zoom, Teams, WebEx, and Chime for meeting apps (with others coming soon). _Standalone meeting apps don’t work with LMA — instead, launch your meetings in the browser._
+    <p align="left"><img src="./images/readme-browser-extension.png" alt="Browser Extension" width=200/></p>
 
 You are responsible for complying with legal, corporate, and ethical restrictions that apply to recording meetings and calls. Do not use this solution to stream, record, or transcribe calls if otherwise prohibited.
 
@@ -55,16 +55,15 @@ You need to have an AWS account and an [AWS Identity and Access Management](http
 If you want LMA to use your own trusted documents to power the context aware meeting assistant then you will use choose either Amazon Q Business or Knowledge Base on Amazon Bedrock. You choose to have LMA either:
 
 1. Automatically create a new Bedrock knowledge base and populate it from documents in an S3 bucket in your AWS account, or from publicly accessible Web pages. Be prepared to specify your document location when you deploy LMA. You can have LMA create a standalone Knowledge Base, or create a Knowledge Base along with a Bedrock Agent with added ability to perform actions such as sending emails.
-2. Or, use an existing Bedrock knowledge base that you have previously created and populated. See [Create a knowledge base](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-create.html).  
+2. Or, use an existing Bedrock knowledge base that you have previously created and populated. See [Create a knowledge base](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-create.html).
 3. Or, use an existing Amazon Q Business application that you have previously created and populated. See [Amazon Q Business integration in LMA](./lma-meetingassist-setup-stack/README_QBUSINESS.md).
 
 If you choose not to have LMA use your own documents, then no Q Business application or knowledge base is needed, and the LMA meeting assistant relies directly on the 'world knowledge' of the LLM model.
 
-
 Finally, LMA uses Amazon Bedrock LLM models for its live meeting assistant and meeting summarization features. Before proceeding, if you have not previously done so, you must [request access](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html) to the following Amazon Bedrock models:
 
-- Amazon: Titan Text Embeddings V2
-- Anthropic: Claude 3.x models
+-   Amazon: Titan Text Embeddings V2
+-   Anthropic: Claude 3.x models
 
 ## Deploy the CloudFormation stack
 
@@ -76,55 +75,55 @@ If you're an administrator or a developer, and you want to understand the new Us
 Complete the following steps to launch the CloudFormation stack:
 
 1. Log in to the [AWS Management Console](https://console.aws.amazon.com/).
-1. 2. Choose Launch Stack for your desired AWS Region to open the AWS CloudFormation console and create a new stack.
+1.  2. Choose Launch Stack for your desired AWS Region to open the AWS CloudFormation console and create a new stack.
 
-   | Region                | Easy Deploy Button                                                                                                                                                                                                                                                                                                                     |
-   | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-   | US East (N. Virginia) | [![Launch Stack](https://cdn.rawgit.com/buildkite/cloudformation-launch-stack-button-svg/master/launch-stack.svg)](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://s3.us-east-1.amazonaws.com/aws-ml-blog-us-east-1/artifacts/lma/lma-main.yaml&stackName=LMA) |
-   | US West (Oregon)      | [![Launch Stack](https://cdn.rawgit.com/buildkite/cloudformation-launch-stack-button-svg/master/launch-stack.svg)](https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/review?templateURL=https://s3.us-west-2.amazonaws.com/aws-ml-blog-us-west-2/artifacts/lma/lma-main.yaml&stackName=LMA) |
+    | Region                | Easy Deploy Button                                                                                                                                                                                                                                                                                                                     |
+    | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+    | US East (N. Virginia) | [![Launch Stack](https://cdn.rawgit.com/buildkite/cloudformation-launch-stack-button-svg/master/launch-stack.svg)](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://s3.us-east-1.amazonaws.com/aws-ml-blog-us-east-1/artifacts/lma/lma-main.yaml&stackName=LMA) |
+    | US West (Oregon)      | [![Launch Stack](https://cdn.rawgit.com/buildkite/cloudformation-launch-stack-button-svg/master/launch-stack.svg)](https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/review?templateURL=https://s3.us-west-2.amazonaws.com/aws-ml-blog-us-west-2/artifacts/lma/lma-main.yaml&stackName=LMA) |
 
 1. For **Stack name**, use the default value, `LMA`.
 1. For **Admin Email Address**, use a valid email address—your temporary password is emailed to this address during the deployment. Refer to [New LMA stack deployment](./lma-ai-stack/README_UBAC.md#new-lma-stack-deployment) for recommendations on choosing an email address.
    )
 1. For **Authorized Account Email Domain**, use the domain name part of your corporate email address to allow users with email addresses in the same domain to create their own new, non-admin, UI accounts, or leave blank to prevent users from directly creating their own accounts. You can enter multiple domains as a comma separated list. Each non-admin user will be able to see their own meetings in LMA, but not other users' meetings - see [User Based Access Control (Preview)](./lma-ai-stack/README_UBAC.md).
 1. For **MeetingAssistService** choose `BEDROCK_KNOWLEDGE_BASE (Use Existing)`, `BEDROCK_KNOWLEDGE_BASE (Create)`, `BEDROCK_AGENT (Use Existing)`, `BEDROCK_AGENT_WITH_KNOWLEDGE_BASE (Create)`, `Q_BUSINESS (Use Existing)`, or `BEDROCK_LLM` (if you do not need a knowledge base)
-   1. If you select `BEDROCK_KNOWLEDGE_BASE (Use Existing)`, then:
-      - For **Bedrock Knowledge Base Id (existing)**, enter your existing Knowledge base ID (for example, JSXXXXX3D8). You can copy it from the Amazon Bedrock Knowledge bases console.
-         <p align="left"><img src="./images/readme-knowledgebase-id.png" alt="KB ID" width=350/></p>
-   1. If you select `BEDROCK_KNOWLEDGE_BASE (Create)`, a new knowledge base is created for you automatically:
-      - To optionally populate your new knowledge base with documents from an Amazon S3 bucket:
-        1. For **S3 bucket with knowledge base source documents**, enter the name of an existing Amazon S3 bucket containing the documents you want to ingest into your new knowledge base.
-        1. For **S3 prefix(es) for your content**, enter any S3 prefixes (paths) to the documents in the S3 bucket, or leave it blank to ingest all documents in the bucket.
-      - To optionally populate your new knowledge base with web site content from public web pages:
-        1. For **Publicly accessible URLs for web crawling**, enter a comma separated list of web site Urls, or leave the defaults to crawl the default demo wikipedia pages.
-        2. For **Web crawling sync scope**, select the choice that best matches how you want the web crawler to navigate out from the Urls you specified.
+    1. If you select `BEDROCK_KNOWLEDGE_BASE (Use Existing)`, then:
+        - For **Bedrock Knowledge Base Id (existing)**, enter your existing Knowledge base ID (for example, JSXXXXX3D8). You can copy it from the Amazon Bedrock Knowledge bases console.
+             <p align="left"><img src="./images/readme-knowledgebase-id.png" alt="KB ID" width=350/></p>
+    1. If you select `BEDROCK_KNOWLEDGE_BASE (Create)`, a new knowledge base is created for you automatically:
+        - To optionally populate your new knowledge base with documents from an Amazon S3 bucket:
+            1. For **S3 bucket with knowledge base source documents**, enter the name of an existing Amazon S3 bucket containing the documents you want to ingest into your new knowledge base.
+            1. For **S3 prefix(es) for your content**, enter any S3 prefixes (paths) to the documents in the S3 bucket, or leave it blank to ingest all documents in the bucket.
+        - To optionally populate your new knowledge base with web site content from public web pages:
+            1. For **Publicly accessible URLs for web crawling**, enter a comma separated list of web site Urls, or leave the defaults to crawl the default demo wikipedia pages.
+            2. For **Web crawling sync scope**, select the choice that best matches how you want the web crawler to navigate out from the Urls you specified.
     1. If you select `BEDROCK_AGENT (Use Existing)`, then:
-       - For **Bedrock Agent Id (existing)**, enter your existing Agent ID (for example, JSXXXXX3D8). You can copy it from the Amazon Bedrock Agent console.
-       - For **Bedrock Agent Alias Id (existing)**, enter your existing Agent Alias ID (for example, JSXXXXX3D8). You can copy it from the Amazon Bedrock Agent console. Use the default `TSTALIASID` to test with the DRAFT version of your agent.
-       - For additional information please see: [Amazon Bedrock Agent integration in LMA (preview)](./lma-meetingassist-setup-stack/README_BEDROCK_AGENT.md)].
+        - For **Bedrock Agent Id (existing)**, enter your existing Agent ID (for example, JSXXXXX3D8). You can copy it from the Amazon Bedrock Agent console.
+        - For **Bedrock Agent Alias Id (existing)**, enter your existing Agent Alias ID (for example, JSXXXXX3D8). You can copy it from the Amazon Bedrock Agent console. Use the default `TSTALIASID` to test with the DRAFT version of your agent.
+        - For additional information please see: [Amazon Bedrock Agent integration in LMA (preview)](./lma-meetingassist-setup-stack/README_BEDROCK_AGENT.md)].
     1. If you select `BEDROCK_AGENT_WITH_KNOWLEDGE_BASE (Create)`, a new agent is created for you automatically:
-       - Optionally populate  **Bedrock Knowledge Base Id (existing)** to have your new agent use an existing Bedrock Knowledge base (see above)
-       - Or leave **Bedrock Knowledge Base Id (existing)** blank to create a new knowledge base for your agent. Use the knowledge base parameters described above to have the new knowledge base automatically populated.
-       - For additional information please see: [Amazon Bedrock Agent integration in LMA (preview)](./lma-meetingassist-setup-stack/README_BEDROCK_AGENT.md)]. 
+        - Optionally populate **Bedrock Knowledge Base Id (existing)** to have your new agent use an existing Bedrock Knowledge base (see above)
+        - Or leave **Bedrock Knowledge Base Id (existing)** blank to create a new knowledge base for your agent. Use the knowledge base parameters described above to have the new knowledge base automatically populated.
+        - For additional information please see: [Amazon Bedrock Agent integration in LMA (preview)](./lma-meetingassist-setup-stack/README_BEDROCK_AGENT.md)].
     1. If you select `Q_BUSINESS (Use Existing)`, then:
-       - For **Amazon Q Application ID (existing)** enter your existing Q Business application ID (a UUID). You can copy it from the Amazon Q Business console.
-         <p align="left"><img src="./images/readme-qbusinessapp-id.png" alt="QB App ID" width=350/></p>
-       - Additional steps are required later. Carefully read the detailed directions documented in [Amazon Q Business integration in LMA](./lma-meetingassist-setup-stack/README_QBUSINESS.md) which guides you to complete identity management setup and QBusiness integration.
+        - For **Amazon Q Application ID (existing)** enter your existing Q Business application ID (a UUID). You can copy it from the Amazon Q Business console.
+            <p align="left"><img src="./images/readme-qbusinessapp-id.png" alt="QB App ID" width=350/></p>
+        - Additional steps are required later. Carefully read the detailed directions documented in [Amazon Q Business integration in LMA](./lma-meetingassist-setup-stack/README_QBUSINESS.md) which guides you to complete identity management setup and QBusiness integration.
 1. For **Transcript Knowledge Base**, choose the default `BEDROCK_KNOWLEDGE_BASE (Use Existing)` (recommended) to enable generative AI queries across meeting transcripts using the new Meetings Query Tool, or choose `DISABLED` if you don't need this feature.
 1. For **all other parameters**, use the default values. If you want to customize the settings later, for example to add your own lambda functions, to use custom vocabularies and language models to improve accuracy, enable PII redaction, and more, you can update the stack for these parameters.
 1. Check the acknowledgement boxes, and choose Create stack.
 
 The main CloudFormation stack uses nested stacks to create the following resources in your AWS account:
 
-- • [Amazon Simple Storage Service](http://aws.amazon.com/s3) (Amazon S3) to hold build artifacts and call recordings
-- An [AWS Fargate](https://aws.amazon.com/fargate/) task with an [Application Load Balancer](https://aws.amazon.com/elasticloadbalancing/application-load-balancer/) providing a websocket server running code to consume stereo audio streams and relay to Amazon Transcribe, publish transcription segments in Kinesis Data Streams, and create and store stereo call recordings.
-- [Amazon Kinesis Data Stream](https://aws.amazon.com/kinesis/data-streams/) to relay call events and transcription segments to the enrichment processing function.
-- LMA resources, including the [QnABot on AWS solution](https://aws.amazon.com/solutions/implementations/aws-qnabot/) stack which interacts with [Amazon OpenSearch service](https://aws.amazon.com/opensearch-service/) and Amazon Bedrock.
-- Optional [Amazon Bedrock Knowledge Bases](https://aws.amazon.com/bedrock/knowledge-bases/) to hold (1) documents and websites used by the Meeting Assistant, and (2) summaries, transcripts, and metadata used by the Meetings Query Tool.
-- [AWS AppSync API](https://aws.amazon.com/appsync), which provides a GraphQL endpoint to support queries and real-time updates
-- Website components including S3 bucket, [Amazon CloudFront](https://aws.amazon.com/cloudfront/) distribution, and [Amazon Cognito](https://aws.amazon.com/cognito) user pool
-- A downloadable pre-configured browser extension application for Chrome browsers.
-- Other miscellaneous supporting resources, including [AWS Identity and Access Management](https://aws.amazon.com/iam/) (IAM) roles and policies (using least privilege best practices), [Amazon - Virtual Private Cloud](https://aws.amazon.com/vpc) (Amazon VPC) resources, [Amazon EventBridge](https://aws.amazon.com/eventbridge/) event rules, and [Amazon CloudWatch](https://aws.amazon.com/cloudwatch) log groups.
+-   • [Amazon Simple Storage Service](http://aws.amazon.com/s3) (Amazon S3) to hold build artifacts and call recordings
+-   An [AWS Fargate](https://aws.amazon.com/fargate/) task with an [Application Load Balancer](https://aws.amazon.com/elasticloadbalancing/application-load-balancer/) providing a websocket server running code to consume stereo audio streams and relay to Amazon Transcribe, publish transcription segments in Kinesis Data Streams, and create and store stereo call recordings.
+-   [Amazon Kinesis Data Stream](https://aws.amazon.com/kinesis/data-streams/) to relay call events and transcription segments to the enrichment processing function.
+-   LMA resources, including the [QnABot on AWS solution](https://aws.amazon.com/solutions/implementations/aws-qnabot/) stack which interacts with [Amazon OpenSearch service](https://aws.amazon.com/opensearch-service/) and Amazon Bedrock.
+-   Optional [Amazon Bedrock Knowledge Bases](https://aws.amazon.com/bedrock/knowledge-bases/) to hold (1) documents and websites used by the Meeting Assistant, and (2) summaries, transcripts, and metadata used by the Meetings Query Tool.
+-   [AWS AppSync API](https://aws.amazon.com/appsync), which provides a GraphQL endpoint to support queries and real-time updates
+-   Website components including S3 bucket, [Amazon CloudFront](https://aws.amazon.com/cloudfront/) distribution, and [Amazon Cognito](https://aws.amazon.com/cognito) user pool
+-   A downloadable pre-configured browser extension application for Chrome browsers.
+-   Other miscellaneous supporting resources, including [AWS Identity and Access Management](https://aws.amazon.com/iam/) (IAM) roles and policies (using least privilege best practices), [Amazon - Virtual Private Cloud](https://aws.amazon.com/vpc) (Amazon VPC) resources, [Amazon EventBridge](https://aws.amazon.com/eventbridge/) event rules, and [Amazon CloudWatch](https://aws.amazon.com/cloudwatch) log groups.
 
 The stacks take about 35-40 minutes to deploy. The main stack status shows CREATE_COMPLETE when everything is deployed. You may want to skip ahead to review “Processing flow overview” while you wait for it, and then come back here when it’s deployed.
 
@@ -188,15 +187,15 @@ LMA provides three streaming options:
 
 1. Open the LMA extension and login with your LMA credentials.
 
-   <img src="./images/readme-browser-extension-login.png" alt="Browser Extension Login" width="150"/>
+    <img src="./images/readme-browser-extension-login.png" alt="Browser Extension Login" width="150"/>
 
 1. Join or start a Zoom meeting in your web browser (_do not use the separate Zoom client_). If you already have the Zoom meeting page loaded, please reload it.
 
-   <img src="./images/readme-zoom-join-from-browser.png" alt="Zoom Open in browser" width="300"/>
+    <img src="./images/readme-zoom-join-from-browser.png" alt="Zoom Open in browser" width="300"/>
 
-   The LMA extension automatically detects that Zoom is running in the browser tab, and populates your name and the meeting name.
+    The LMA extension automatically detects that Zoom is running in the browser tab, and populates your name and the meeting name.
 
-   <img src="./images/readme-browser-extension-start.png" alt="Browser Extension Start" width="500"/>
+    <img src="./images/readme-browser-extension-start.png" alt="Browser Extension Start" width="500"/>
 
 1. Tell others on the call that you are about to start recording the call using LMA and obtain their permission. Do not proceed if participants object.
 
@@ -204,20 +203,20 @@ LMA provides three streaming options:
 
 1. Read and accept the disclaimer. Choose **Allow** on the popup asking you to share the browser tab.
 
-   <img src="./images/readme-stream-disclaimer.png" alt="Browser Extension Start" width=250/>
+    <img src="./images/readme-stream-disclaimer.png" alt="Browser Extension Start" width=250/>
 
-   The LMA extension automatically detects and displays the active speaker on the call. If you are alone in the meeting, invite some friends to join, and observe that the names they used to join the call are displayed in the extension when they speak, and attributed to their words in the LMA transcript.
+    The LMA extension automatically detects and displays the active speaker on the call. If you are alone in the meeting, invite some friends to join, and observe that the names they used to join the call are displayed in the extension when they speak, and attributed to their words in the LMA transcript.
 
-   <img src="./images/readme-browser-extension-listening.png" alt="Browser Extension Listening" width="500"/>
+    <img src="./images/readme-browser-extension-listening.png" alt="Browser Extension Listening" width="500"/>
 
 1. Choose **Open in LMA** to see your live transcript in a new tab.
 1. Choose your preferred transcript language, and interact with the meeting assistant using the wake phrase _"OK Assistant!"_ or the **Meeting Assist Bot** pane on the right. The **ASK ASSISTANT** button is fun to try – it asks the meeting assistant service (Bedrock knowledge base, Q Business, or Bedrock LLM) to suggest a ‘good response’ based on the transcript of the recent interactions in the meeting. Your mileage may vary, so experiment!
 
-   <img src="./images/readme-lma-meeting-detail.png" alt="Meeting Detail page" width="500"/>
+    <img src="./images/readme-lma-meeting-detail.png" alt="Meeting Detail page" width="500"/>
 
 1. When you are done, choose **Stop Streaming** to end the meeting in LMA. Within a few seconds the automated end-of-meeting summaries appear, and the audio recording becomes available. You can continue to use the bot after the call has ended.
 
-   <img src="./images/readme-call-ended.png" alt="Call Ended" width="400"/>
+    <img src="./images/readme-call-ended.png" alt="Call Ended" width="400"/>
 
 ### Option 2: Use the LMA UI Stream Audio tab to stream from your microphone and any browser based audio application
 
@@ -269,7 +268,6 @@ After you've completed a few meetings, use the new **Meetings Query Tool** in th
 
 <img src="./images/readme-meetings-query-tool.png" alt="readme-meetings-query-tool.png" width="600"/>
 
-
 Open the Context to see the references, and Shift+Click on the links to open the meeting details in a new browser tab.
 
 ## Processing flow overview
@@ -304,9 +302,9 @@ Amazon Transcribe has a default limit of 25 concurrent transcription streams, wh
 
 LMA provides runtime monitoring and logs for each component using CloudWatch:
 
-- **Websocket processing and transcribing Fargate task** – On the [Amazon Elastic Container Service](https://us-east-1.console.aws.amazon.com/ecs/v2/clusters) (Amazon ECS) console, navigate to the Clusters page and open the `LMA-WEBSOCKETTRANSCRIBERSTACK-xxxx-TranscribingCluster` function. Choose the **Tasks** tab and open the task page. Choose **Logs** and **View in CloudWatch** to inspect the WebSocket transcriber task logs.
-- **Call Event Processor Lambda function** – On the Lambda console, open the `AISTACK-CallEventProcessor` function. Choose the **Monitor** tab to see function metrics. Choose **View logs in CloudWatch** to inspect function logs.
-- **AWS AppSync API** – On the AWS AppSync console, open the `CallAnalytics-LMA` API. Choose Monitoring in the navigation pane to see API metrics. Choose **View logs in CloudWatch** to inspect AWS AppSync API logs.
+-   **Websocket processing and transcribing Fargate task** – On the [Amazon Elastic Container Service](https://us-east-1.console.aws.amazon.com/ecs/v2/clusters) (Amazon ECS) console, navigate to the Clusters page and open the `LMA-WEBSOCKETTRANSCRIBERSTACK-xxxx-TranscribingCluster` function. Choose the **Tasks** tab and open the task page. Choose **Logs** and **View in CloudWatch** to inspect the WebSocket transcriber task logs.
+-   **Call Event Processor Lambda function** – On the Lambda console, open the `AISTACK-CallEventProcessor` function. Choose the **Monitor** tab to see function metrics. Choose **View logs in CloudWatch** to inspect function logs.
+-   **AWS AppSync API** – On the AWS AppSync console, open the `CallAnalytics-LMA` API. Choose Monitoring in the navigation pane to see API metrics. Choose **View logs in CloudWatch** to inspect AWS AppSync API logs.
 
 For QnABot on AWS for Meeting Assist, refer to the [Meeting Assist README](./lma-meetingassist-setup-stack/README.md), and the [QnABot solution implementation guide](https://docs.aws.amazon.com/solutions/latest/qnabot-on-aws/welcome.html) for additional information.
 
@@ -315,21 +313,21 @@ For QnABot on AWS for Meeting Assist, refer to the [Meeting Assist README](./lma
 LMA provides a websocket server using Fargate (0.25vCPU) and VPC networking resources costing about $0.014/hr (~$10/mth) - see [Fargate pricing](https://aws.amazon.com/fargate/pricing/).
 
 Meeting Assist is enabled using QnABot and Amazon Q Business or Knowledge bases for Amazon Bedrock. You create your own Q Business application or Bedrock knowledge base which you use for LMA and potentially other use cases – see [Amazon Q Business pricing](https://aws.amazon.com/q/business/pricing/) or [Amazon Bedrock pricing](https://aws.amazon.com/bedrock/pricing/) for more, or you can choose, when you deploy, to use a Bedrock LLM without a knowledge base.
-Additional AWS services used by the QnABot solution as configured (with Opensearch node count default of '1') cost about $0.14/hour ($100/mth) – see [QnABot on AWS solution costs](https://docs.aws.amazon.com/solutions/latest/qnabot-on-aws/cost.html). 
+Additional AWS services used by the QnABot solution as configured (with Opensearch node count default of '1') cost about $0.14/hour ($100/mth) – see [QnABot on AWS solution costs](https://docs.aws.amazon.com/solutions/latest/qnabot-on-aws/cost.html).
 
 The remaining solution costs are based on usage.
 
 The usage costs add up to about $0.17 for a 5-minute call, although this can vary based on options selected (such as translation), number of LLM summarizations and total usage because usage affects Free Tier eligibility and volume tiered pricing for many services. For more information about the services that incur usage costs, see the following:
 
-- [AWS AppSync pricing](https://aws.amazon.com/appsync/pricing/)
-- [Amazon Translate pricing](https://aws.amazon.com/translate/pricing/)
-- [Amazon Cognito Pricing](https://aws.amazon.com/cognito/pricing/)
-- [Amazon DynamoDB pricing](https://aws.amazon.com/dynamodb/pricing/)
-- [AWS Lambda Pricing](https://aws.amazon.com/lambda/pricing/)
-- [Amazon S3 pricing](https://aws.amazon.com/s3/pricing/)
-- [Amazon Transcribe Pricing](https://aws.amazon.com/transcribe/pricing/)
-- [Amazon Bedrock pricing](https://aws.amazon.com/bedrock/pricing/)
-- [QnABot on AWS costs](https://docs.aws.amazon.com/solutions/latest/qnabot-on-aws/cost.html)
+-   [AWS AppSync pricing](https://aws.amazon.com/appsync/pricing/)
+-   [Amazon Translate pricing](https://aws.amazon.com/translate/pricing/)
+-   [Amazon Cognito Pricing](https://aws.amazon.com/cognito/pricing/)
+-   [Amazon DynamoDB pricing](https://aws.amazon.com/dynamodb/pricing/)
+-   [AWS Lambda Pricing](https://aws.amazon.com/lambda/pricing/)
+-   [Amazon S3 pricing](https://aws.amazon.com/s3/pricing/)
+-   [Amazon Transcribe Pricing](https://aws.amazon.com/transcribe/pricing/)
+-   [Amazon Bedrock pricing](https://aws.amazon.com/bedrock/pricing/)
+-   [QnABot on AWS costs](https://docs.aws.amazon.com/solutions/latest/qnabot-on-aws/cost.html)
 
 To explore LMA costs for yourself, use AWS Cost Explorer or choose Bill Details on the AWS Billing Dashboard to see your month-to-date spend by service.
 
@@ -339,15 +337,15 @@ To explore LMA costs for yourself, use AWS Cost Explorer or choose Bill Details 
 
 Use the following CloudFormation template parameters when creating or updating your stack to customize your LMA deployment:
 
-- To use your own S3 bucket for meeting recordings, use **Call Audio Recordings Bucket Name** and **Audio File Prefix**.
-- To redact PII from the transcriptions, set **Enable Content Redaction for Transcripts** to `true`, and adjust **Transcription PII Redaction Entity Types** as needed. For more information, see [Redacting or identifying PII in a real-time stream](https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction-stream.html).
-- To improve transcription accuracy for technical and domain-specific acronyms and jargon, set **Transcription Custom Vocabulary Name** to the name of a custom vocabulary that you already created in Amazon Transcribe and/or set **Transcription Custom Language Model Name** to the name of a previously created custom language model. For more information, see [Improving Transcription Accuracy](https://docs.aws.amazon.com/transcribe/latest/dg/improving-accuracy.html).
-- To transcribe meetings in a supported language other than US English, chose the desired value for **Language for Transcription**. You can also choose to have Transcribe identify the primary language, or even multiple languages used during the meeting by setting **Language for Transcription** to `identify-language` or `identify-multiple-languages` and provide a list of languages with an optional preferred language - see [Language identification with streaming transcriptions](https://docs.aws.amazon.com/transcribe/latest/dg/lang-id-stream.html).
-- To customize transcript processing, optionally set **Lambda Hook Function ARN for Custom Transcript Segment Processing** to the ARN of your own Lambda function. For more information, see [Using a Lambda function to optionally provide custom logic for transcript processing](./lma-ai-stack/TranscriptLambdaHookFunction.md).
-- To customize the Meeting Assist capabilities based on the QnABot on AWS solution, Amazon Lex, Amazon Bedrock, and Bedrock Knowledge base integration, see the [Meeting Assist README](./lma-meetingassist-setup-stack/README.md).
-- To customize Transcript Summarization by configuring LMA to call your own Lambda function, see [Transcript Summarization LAMBDA option](./lma-ai-stack/TranscriptSummarization.md#lambda).
-- To customize Transcript Summarization by modifying the default prompts or adding new ones, see [Transcript Summarization](./lma-ai-stack/TranscriptSummarization.md).
-- To change the retention period, set **Record Expiration In Days** to the desired value. All call data is permanently deleted from the LMA DynamoDB storage after this period. Changes to this setting apply only to new calls received after the update.
+-   To use your own S3 bucket for meeting recordings, use **Call Audio Recordings Bucket Name** and **Audio File Prefix**.
+-   To redact PII from the transcriptions, set **Enable Content Redaction for Transcripts** to `true`, and adjust **Transcription PII Redaction Entity Types** as needed. For more information, see [Redacting or identifying PII in a real-time stream](https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction-stream.html).
+-   To improve transcription accuracy for technical and domain-specific acronyms and jargon, set **Transcription Custom Vocabulary Name** to the name of a custom vocabulary that you already created in Amazon Transcribe and/or set **Transcription Custom Language Model Name** to the name of a previously created custom language model. For more information, see [Improving Transcription Accuracy](https://docs.aws.amazon.com/transcribe/latest/dg/improving-accuracy.html).
+-   To transcribe meetings in a supported language other than US English, chose the desired value for **Language for Transcription**. You can also choose to have Transcribe identify the primary language, or even multiple languages used during the meeting by setting **Language for Transcription** to `identify-language` or `identify-multiple-languages` and provide a list of languages with an optional preferred language - see [Language identification with streaming transcriptions](https://docs.aws.amazon.com/transcribe/latest/dg/lang-id-stream.html).
+-   To customize transcript processing, optionally set **Lambda Hook Function ARN for Custom Transcript Segment Processing** to the ARN of your own Lambda function. For more information, see [Using a Lambda function to optionally provide custom logic for transcript processing](./lma-ai-stack/TranscriptLambdaHookFunction.md).
+-   To customize the Meeting Assist capabilities based on the QnABot on AWS solution, Amazon Lex, Amazon Bedrock, and Bedrock Knowledge base integration, see the [Meeting Assist README](./lma-meetingassist-setup-stack/README.md).
+-   To customize Transcript Summarization by configuring LMA to call your own Lambda function, see [Transcript Summarization LAMBDA option](./lma-ai-stack/TranscriptSummarization.md#lambda).
+-   To customize Transcript Summarization by modifying the default prompts or adding new ones, see [Transcript Summarization](./lma-ai-stack/TranscriptSummarization.md).
+-   To change the retention period, set **Record Expiration In Days** to the desired value. All call data is permanently deleted from the LMA DynamoDB storage after this period. Changes to this setting apply only to new calls received after the update.
 
 LMA is an open-source project. You can fork the LMA GitHub repository, enhance the code, and send us pull requests so we can incorporate and share your improvements!
 
@@ -376,7 +374,7 @@ features, recommendations on choosing an email for the admin persona, and limita
 
 Make sure you have the latest version of the browser extension installed in your browser after you update the LMA stack.
 
-1. Remove your existing Amazon Live Meeting Assistant extension in the `chrome://extensions/` page.
+1. Remove your existing Leali Meeting Assistant extension in the `chrome://extensions/` page.
 
 2. Follow the steps documented in [Download and install the Chrome browser extension](#download-and-install-the-chrome-browser-extension) to install the latest extension from your updated LMA deployment.
 

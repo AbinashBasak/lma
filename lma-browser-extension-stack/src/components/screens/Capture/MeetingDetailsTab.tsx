@@ -17,6 +17,7 @@ import { TriangleAlertIcon } from 'lucide-react';
 import { useSettings } from 'context/SettingsContext';
 import { useIntegration } from 'context/ProviderIntegrationContext';
 import { useUserContext } from 'context/UserContext';
+import { eventBus$ } from 'lib/eventBus';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface IMeetingDetailsTab {}
@@ -25,7 +26,8 @@ interface IMeetingDetailsTab {}
 const MeetingDetailsTab = (props: IMeetingDetailsTab) => {
     const settings = useSettings();
     const { user } = useUserContext();
-    const { activeSpeaker, metadata, fetchMetadata, isTranscribing, startTranscription } = useIntegration();
+    const { currentCall, activeSpeaker, metadata, fetchMetadata, isTranscribing, startTranscription, sendMessage } = useIntegration();
+    const callId = currentCall?.callId;
 
     const [showDisclaimer, setShowDisclaimer] = useState(false);
     const [topic, setTopic] = useState('');
@@ -38,7 +40,6 @@ const MeetingDetailsTab = (props: IMeetingDetailsTab) => {
     }, []);
 
     useEffect(() => {
-        console.log('Metadata changed');
         if (metadata?.meetingTopic) {
             setTopic(metadata.meetingTopic);
         }
@@ -76,10 +77,24 @@ const MeetingDetailsTab = (props: IMeetingDetailsTab) => {
 
     const disclaimerConfirmed = useCallback(() => {
         startTranscription(user, agentName, topic);
+        eventBus$.next({
+            eventType: 'clear',
+        });
     }, [user, agentName, topic, startTranscription]);
 
+    const updateMeetingMetaData = () => {
+        sendMessage(
+            JSON.stringify({
+                callEvent: 'MEETING_HEADER_METADATA',
+                meetingTopic: topic,
+                userName: agentName,
+                callId,
+            }),
+        );
+    };
+
     return (
-        <div className="flex flex-col gap-4 px-4 pt-4">
+        <div className="flex flex-col gap-4 px-6 pt-6">
             <div>
                 <Label className={cn('text-slate-100 block pb-[6px]', nameErrorText !== '' && 'text-red-500')}>Your name:</Label>
                 <Input
@@ -103,7 +118,13 @@ const MeetingDetailsTab = (props: IMeetingDetailsTab) => {
                 {meetingTopicErrorText ? <p className="text-red-500 text-xs mt-1 ml-1">{meetingTopicErrorText}</p> : null}
             </div>
             <div>{isTranscribing && activeSpeaker?.length ? <p className="text-slate-100 text-sm">Active Speaker: {activeSpeaker}</p> : null}</div>
-            {isTranscribing ? null : <Button onClick={() => startListening()}>Start Listening</Button>}
+            {!isTranscribing ? (
+                <Button disabled={agentName === '' || topic === ''} onClick={updateMeetingMetaData}>
+                    Update
+                </Button>
+            ) : (
+                <Button onClick={() => startListening()}>Start Listening</Button>
+            )}
 
             <AlertDialog open={showDisclaimer} onOpenChange={(openStatus) => setShowDisclaimer(openStatus)}>
                 <AlertDialogContent className="p-3 w-[calc(100%-16px)] rounded-lg bg-gray-900 border-gray-700">
@@ -125,7 +146,7 @@ const MeetingDetailsTab = (props: IMeetingDetailsTab) => {
                             Cancel
                         </AlertDialogCancel>
                         <AlertDialogAction
-                            onClick={async () => {
+                            onClick={() => {
                                 setShowDisclaimer(false);
                                 disclaimerConfirmed();
                             }}

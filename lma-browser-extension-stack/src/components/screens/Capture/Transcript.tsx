@@ -1,7 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useIntegration } from 'context/ProviderIntegrationContext';
 import { useLiveTranscript } from './hooks/useLiveTranscript';
 import { Avatar, AvatarFallback } from 'components/ui/avatar';
+import { Switch } from 'components/ui/switch';
+import { Label } from 'components/ui/label';
 
 const getDisplayChannel = (channel: string, speaker?: string) => {
     if (channel === 'AGENT' || channel === 'CALLER') {
@@ -25,15 +27,22 @@ function Transcript() {
     const list = useLiveTranscript(currentCall?.callId);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const bottomRef = useRef<any>();
+    const [isAutoScrollEnable, setIsAutoScrollEnable] = useState<boolean>(false);
 
     useEffect(() => {
-        if (bottomRef.current?.scrollIntoView) {
+        if (isAutoScrollEnable && bottomRef.current?.scrollIntoView) {
             bottomRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }, [list]);
 
     return (
         <div>
+            <div className="border-b border-slate-700 pb-2 mb-2 px-4 pt-2">
+                <div className="flex items-center space-x-3">
+                    <Label htmlFor="auto-scroll">Auto Scroll</Label>
+                    <Switch id="auto-scroll" checked={isAutoScrollEnable} onCheckedChange={setIsAutoScrollEnable} />
+                </div>
+            </div>
             <div className="max-h-[468px] overflow-auto pt-4">
                 {list?.map((item) => (
                     <div className="border-b border-b-slate-700 pb-2 mb-5 px-4" key={item.PK}>

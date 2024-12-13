@@ -1,5 +1,6 @@
 export interface ICallDetails {
   callId: string;
+  Status: 'STARTED' | 'ENDED';
   agentId: string;
   callCategories: string | null;
   callCategoryCount: number;
@@ -11,6 +12,8 @@ export interface ICallDetails {
   updatedAt: string;
   recordingUrl: string;
   pcaUrl: string | null;
+  UserName: string | null;
+  MeetingTopic: string | null;
   totalConversationDurationMillis: number;
   conversationDurationTimeStamp: string;
   conversationDurationInHumanReadableFormat: string;

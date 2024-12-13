@@ -224,6 +224,7 @@ function IntegrationProvider({ children }: any) {
             setIsTranscribing(false);
             setPaused(false);
             sendStopMessage();
+            setCurrentCall({} as Call);
         }
     }, [
         readyState,

@@ -164,11 +164,12 @@ export const ShareModal = (props) => {
           onClick={openShareSettings}
           disabled={props.selectedItems.length === 0 || props.loading}
           className="text-xs leading-none h-7 gap-1 px-2 text-gray-700"
+          id="share-btn"
         >
           <Share2Icon /> {props.title || null}
         </Button>
       ) : (
-        <Button variant="outline" size="icon" onClick={openShareSettings} disabled={props.selectedItems.length === 0 || props.loading}>
+        <Button variant="outline" id="share-btn" size="icon" onClick={openShareSettings} disabled={props.selectedItems.length === 0 || props.loading}>
           <Share2Icon />
         </Button>
       )}

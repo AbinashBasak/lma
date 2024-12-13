@@ -1,13 +1,25 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { debounce } from 'lodash';
 import { useIntegration } from 'context/ProviderIntegrationContext';
 import { ReadyState } from 'react-use-websocket';
+import { eventBus$, EventPayload } from 'lib/eventBus';
 
 const MeetingNote = () => {
     const { currentCall, sendMessage, readyState } = useIntegration();
     const callId = currentCall?.callId;
 
     const [note, setNote] = useState('');
+
+    useEffect(() => {
+        const subscription = eventBus$.subscribe((event: EventPayload) => {
+            if (event.eventType === 'clear') {
+                setNote('');
+            }
+        });
+
+        // Cleanup subscription on unmount
+        return () => subscription.unsubscribe();
+    }, []);
 
     const updateNote = useCallback(
         debounce((value) => {
@@ -35,7 +47,7 @@ const MeetingNote = () => {
                 onChange={handleNoteChange}
                 className="flex-1 resize-none border ring-0 focus-visible:outline-none text-white text-sm bg-slate-800 border-slate-600 p-2"
                 rows={8}
-                disabled={readyState !== ReadyState.OPEN}
+                disabled={readyState !== ReadyState.OPEN || !callId}
             />
         </div>
     );

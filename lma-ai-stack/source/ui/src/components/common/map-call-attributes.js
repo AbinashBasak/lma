@@ -29,6 +29,9 @@ const mapCallsAttributes = (calls, settings) => {
       SharedWith: sharedWith,
       ListPK: listPK,
       ListSK: listSK,
+      UserName,
+      MeetingTopic,
+      Status,
     } = item;
     const recordingStatus = getRecordingStatus(item);
 
@@ -75,6 +78,9 @@ const mapCallsAttributes = (calls, settings) => {
       sharedWith,
       listPK,
       listSK,
+      UserName,
+      MeetingTopic,
+      Status,
     };
   });
 };

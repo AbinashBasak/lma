@@ -4,6 +4,7 @@ import OptionBadge from 'components/OptionBadge';
 import axios from 'axios';
 import useAppContext from 'contexts/app';
 import { Button } from 'components/ui/button';
+import { API_ENDPOINT } from 'constant';
 
 const DEPARTMENTS = [
   {
@@ -97,7 +98,7 @@ export default function UserForm() {
   useEffect(() => {
     const getUserDetails = async () => {
       try {
-        const res = await axios.get('http://localhost:3001/user/user-details', {
+        const res = await axios.get(`${API_ENDPOINT}/user/user-details`, {
           headers: {
             Authorization: `Bearer ${user.signInUserSession.accessToken.jwtToken}`,
           },

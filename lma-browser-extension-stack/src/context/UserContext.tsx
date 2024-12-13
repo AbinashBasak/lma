@@ -16,6 +16,7 @@ interface IInitialUserContext {
     loggedIn: boolean;
     checkTokenExpired: () => Promise<boolean>;
     updateCurrentSession: (options?: FetchAuthSessionOptions) => Promise<AuthSession | null>;
+    isLoading: boolean;
 }
 
 const initialUserContext: IInitialUserContext = {
@@ -28,13 +29,15 @@ const initialUserContext: IInitialUserContext = {
     updateCurrentSession: async () => {
         return null;
     },
+    isLoading: true,
 };
 const UserContext = createContext<IInitialUserContext>(initialUserContext);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function UserProvider({ children }: IUserProvider) {
     const [user, setUser] = useState<User>({});
-    const [loggedIn, setLoggedIn] = useState(false);
+    const [loggedIn, setLoggedIn] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const updateCurrentSession = useCallback(
         async (options?: FetchAuthSessionOptions) => {
@@ -46,15 +49,18 @@ function UserProvider({ children }: IUserProvider) {
                         id_token: auth.tokens.idToken?.toString(),
                     });
                     setLoggedIn(true);
+                    setIsLoading(false);
                     return auth;
                 } else {
                     setUser({});
                     setLoggedIn(false);
+                    setIsLoading(false);
                     return null;
                 }
             } catch (err) {
                 setUser({});
                 setLoggedIn(false);
+                setIsLoading(false);
                 console.log(err);
                 return null;
             }
@@ -85,7 +91,9 @@ function UserProvider({ children }: IUserProvider) {
         setLoggedIn(false);
     }, [user, loggedIn]);
 
-    return <UserContext.Provider value={{ user, logout, loggedIn, checkTokenExpired, updateCurrentSession }}>{children}</UserContext.Provider>;
+    return (
+        <UserContext.Provider value={{ user, logout, loggedIn, checkTokenExpired, updateCurrentSession, isLoading }}>{children}</UserContext.Provider>
+    );
 }
 export function useUserContext() {
     return useContext(UserContext);

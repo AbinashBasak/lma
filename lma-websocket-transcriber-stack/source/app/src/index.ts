@@ -7,8 +7,7 @@ import websocket from '@fastify/websocket';
 import { FastifyRequest } from 'fastify';
 import { DynamoDBClient, GetItemCommand, PutItemCommand, UpdateItemCommand } from '@aws-sdk/client-dynamodb';
 
-import WebSocket from 'ws'; // type structure for the websocket object used by fastify/websocket
-// import stream from 'stream';
+import WebSocket from 'ws';
 import os from 'os';
 import path from 'path';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
@@ -31,6 +30,7 @@ import { createWavHeader, posixifyFilename, normalizeErrorForLogging, getClientI
 import { jwtVerifier } from './utils/jwt-verifier';
 
 const CALL_NOTE_TABLE_NAME = process.env['CALL_NOTE_TABLE_NAME'] || 'CallNote';
+const EVENT_SOURCING_TABLE_NAME = 'LMA-PROD-AISTACK-1B6L1W3KCE7VS-EventSourcingTable-1H6S3U8PBOCF3';
 const AWS_REGION = process.env['AWS_REGION'] || 'us-east-1';
 const RECORDINGS_BUCKET_NAME = process.env['RECORDINGS_BUCKET_NAME'] || undefined;
 const RECORDING_FILE_PREFIX = process.env['RECORDING_FILE_PREFIX'] || 'lma-audio-recordings/';
@@ -266,7 +266,6 @@ const onTextMessage = async (clientIP: string, ws: WebSocket, data: string, requ
 			};
 			const command = new GetItemCommand(getPayload);
 			const data = await dynamoClient.send(command);
-			console.log('data');
 
 			if (data.Item?.['PK'].S) {
 				const updatePayload = {
@@ -303,6 +302,34 @@ const onTextMessage = async (clientIP: string, ws: WebSocket, data: string, requ
 				const command = new PutItemCommand(putPayload);
 				await dynamoClient.send(command);
 			}
+		} catch (error) {
+			console.log(error);
+		}
+	} else if (callMetaData.callEvent === 'MEETING_HEADER_METADATA') {
+		try {
+			const updatePayload = {
+				TableName: EVENT_SOURCING_TABLE_NAME,
+				Key: {
+					PK: {
+						S: `c#${callMetaData.callId}`,
+					},
+				},
+				UpdateExpression: 'SET #MeetingTopic = :meetingTopicValue, #UserName = :meetingUserName',
+				ExpressionAttributeNames: {
+					'#MeetingTopic': 'MeetingTopic',
+					'#UserName': 'UserName',
+				},
+				ExpressionAttributeValues: {
+					':meetingTopicValue': {
+						S: callMetaData.meetingTopic as string,
+					},
+					':meetingUserName': {
+						S: callMetaData.userName as string,
+					},
+				},
+			};
+			const command = new UpdateItemCommand(updatePayload);
+			await dynamoClient.send(command);
 		} catch (error) {
 			console.log(error);
 		}

@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
+import { Tabs, TabsContent, TabsList } from 'components/ui/tabs';
 import MeetingDetailsTab from './MeetingDetailsTab';
 import Footer from './Footer';
 import Transcript from './Transcript';
-import { useUserContext } from 'context/UserContext';
 import MeetingNote from './MeetingNote';
+import { Captions, Headset, NotebookPen } from 'lucide-react';
+import TabsTrigger from './TabsTrigger';
+import Header from './Header';
 
 function Capture() {
-    const { logout } = useUserContext();
     useEffect(() => {
         if (chrome && chrome.runtime) {
             chrome.runtime.getManifest();
@@ -17,12 +18,14 @@ function Capture() {
     return (
         <div className="h-full">
             <div className="h-[80vh] min-h-[365px] flex flex-col">
-                <div className="bg-slate-800 px-4 py-4">
-                    <h1 className="text-base font-semibold text-gray-3">Leali Live Meeting Assistant</h1>
-                    <button onClick={logout}>logout</button>
-                </div>
+                <Header />
                 <div className="bg-slate-900 flex-1">
-                    <Tabs defaultValue="MeetingDetails" className="w-full h-full flex flex-col">
+                    <Tabs defaultValue="MeetingDetails" className="w-full h-full flex flex-row">
+                        <TabsList className="flex-col justify-start gap-2 h-full w-10 rounded-none bg-slate-700 pt-4">
+                            <TabsTrigger icon={<Headset size={20} />} tableName="MeetingDetails" title="Meeting Details" />
+                            <TabsTrigger icon={<Captions size={20} />} tableName="transcript" title="Transcript" />
+                            <TabsTrigger icon={<NotebookPen size={20} />} tableName="note" title="Note" />
+                        </TabsList>
                         <TabsContent value="MeetingDetails" className="mt-0 flex-1 hidden data-[state=active]:block" forceMount>
                             <MeetingDetailsTab />
                         </TabsContent>
@@ -32,26 +35,6 @@ function Capture() {
                         <TabsContent value="note" className="mt-0 flex-1 hidden data-[state=active]:block" forceMount>
                             <MeetingNote />
                         </TabsContent>
-                        <TabsList className="w-full rounded-none bg-slate-700 mt-1">
-                            <TabsTrigger
-                                className="flex-1 data-[state=active]:bg-slate-800 data-[state=active]:text-white text-slate-300 rounded-sm"
-                                value="MeetingDetails"
-                            >
-                                Meeting Details
-                            </TabsTrigger>
-                            <TabsTrigger
-                                className="flex-1 data-[state=active]:bg-slate-800 data-[state=active]:text-white text-slate-300 rounded-sm"
-                                value="transcript"
-                            >
-                                Transcript
-                            </TabsTrigger>
-                            <TabsTrigger
-                                className="flex-1 data-[state=active]:bg-slate-800 data-[state=active]:text-white text-slate-300 rounded-sm"
-                                value="note"
-                            >
-                                Note
-                            </TabsTrigger>
-                        </TabsList>
                     </Tabs>
                 </div>
                 <Footer />
